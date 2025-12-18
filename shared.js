@@ -59,3 +59,5 @@ async function cargarComponente(idContenedor, urlArchivo) {
 }
 
 cargarComponente('historico-section', 'historico.html');
+cargarComponente('vs-section', 'vs.html');
+cargarComponente('favoritos-section', 'favoritos.html');
