@@ -37,6 +37,112 @@
               >
               <button type="submit" class="botones boton-buscar">BUSCAR</button>
             </form>
+
+            <!-- card del pokemon -->
+            <div class="resultado-busqueda">
+              <div class="pokemon-card" id="pokemon-card">
+                <!-- header de la card -->
+                <div class="card-tag-container">
+                  <span class="card-tag-tipo">POKEMON_DATA</span>
+                  <span class="card-tag-origen">🌐 DESDE API</span>
+                </div>
+  
+                <!-- imagen del pokemon -->
+                <div class="card-imagen-container">
+                  <img class="card-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Bulbasaur">
+                </div>
+  
+                <div class="card-info-container">
+                  <!-- nombre y numero -->
+                  <div class="card-nombre-container">
+                    <span class="id-pokemon">#1 </span>
+                    <span class="nombre-pokemon"> BULBASAUR</span>
+                  </div>
+    
+                  <!-- tipos del pokemon -->
+                  <div class="card-tipos">
+                    <span class="tipo-tag">GRASS</span>
+                    <span class="tipo-tag">POISON</span>
+                  </div>
+
+                  <!-- habilidades -->
+                  <div class="habilidades-container">
+                    <h3>HABILIDADES</h3>
+                    <div class="card-habilidades">
+                      <span class="habilidad-tag">Overgrow</span>
+                      <span class="habilidad-tag habilidad-tag-2">Chlorophyll (Oculta)</span>
+                    </div>
+                  </div>
+
+                  <!-- stats del pokemon -->
+                  <div class="stats-container">
+                    <div class="stat-fila">
+                      <span class="stat-nombre">HP:</span>
+                      <div class="stat-barra-container">
+                        <div class="stat-barra" style="width: 45%;"></div>
+                      </div>
+                    </div>
+                    <div class="stat-fila">
+                      <span class="stat-nombre">ATTACK:</span>
+                      <div class="stat-barra-container">
+                        <div class="stat-barra" style="width: 49%;"></div>
+                      </div>
+                    </div>
+                    <div class="stat-fila">
+                      <span class="stat-nombre">DEFENSE:</span>
+                      <div class="stat-barra-container">
+                        <div class="stat-barra" style="width: 49%;"></div>
+                      </div>
+                    </div>
+                    <div class="stat-fila">
+                      <span class="stat-nombre">SPECIAL-ATTACK:</span>
+                      <div class="stat-barra-container">
+                        <div class="stat-barra" style="width: 65%;"></div>
+                      </div>
+                    </div>
+                    <div class="stat-fila">
+                      <span class="stat-nombre">SPECIAL-DEFENSE:</span>
+                      <div class="stat-barra-container">
+                        <div class="stat-barra" style="width: 65%;"></div>
+                      </div>
+                    </div>
+                    <div class="stat-fila">
+                      <span class="stat-nombre">SPEED:</span>
+                      <div class="stat-barra-container">
+                        <div class="stat-barra" style="width: 45%;"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- boton de favoritos -->
+                  <div class="favorito-container">
+                    <button class="botones boton-favorito">❤️</button>
+                  </div>
+
+                  <!-- evoluciones -->
+                  <div class="evoluciones-seccion">
+                    <h3 class="evoluciones-titulo">CADENA DE EVOLUCIÓN</h3>
+                    <div class="evoluciones-container">
+                      <div class="evolucion-item evolucion-actual">
+                        <img class="evolucion-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Bulbasaur">
+                        <span class="evolucion-nombre">BULBASAUR</span>
+                      </div>
+                      <span class="evolucion-flecha">→</span>
+                      <div class="evolucion-item">
+                        <img class="evolucion-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png" alt="Ivysaur">
+                        <span class="evolucion-nombre">IVYSAUR</span>
+                      </div>
+                      <span class="evolucion-flecha">→</span>
+                      <div class="evolucion-item">
+                        <img class="evolucion-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png" alt="Venusaur">
+                        <span class="evolucion-nombre">VENUSAUR</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
           </section>
 
           <section class="panel" data-view-panel="historico">
