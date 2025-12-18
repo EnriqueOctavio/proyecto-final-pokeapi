@@ -13,6 +13,14 @@ buttonTag.forEach((button) => {
 const buttonContainer = document.querySelector('.buttons-tag-container');
 const buttonTag = document.querySelectorAll('.button-tag')
 const panels = document.querySelectorAll('[data-view-panel]')
+const tituloPrincipal = document.getElementById('titulo-principal');
+
+const titulos = {
+  buscar: 'Pokémon Finder',
+  historico: '📜 Histórico',
+  vs: '⚔️ VS',
+  favoritos: '⭐ Favoritos'
+};
 
 panels.forEach((panel) => { //Esto lo hice para mostrar el panel de buscar primero
     const vistaPanel = panel.dataset.viewPanel;
@@ -33,6 +41,8 @@ buttonContainer.addEventListener('click', (event) => {
     const vistaPanel = panel.dataset.viewPanel;
     panel.hidden = vistaPanel !== vistaButton;
   });
+
+  tituloPrincipal.textContent = titulos[vistaButton];
 });
 
 

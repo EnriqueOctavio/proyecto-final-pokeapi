@@ -113,7 +113,9 @@ body{
 
 h1 {
   background-color:var(--color-success);
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--color-primary);
   font-weight: 800;
   font-family: var(--font-family);
@@ -122,7 +124,6 @@ h1 {
   padding: 1.4rem 2.5rem;
   border: var(--border-width) solid var(--border-color);
   box-shadow: var(--shadow);
-  width: 500px;
   height: 90px;
   transform: rotate(-3deg);
 }
