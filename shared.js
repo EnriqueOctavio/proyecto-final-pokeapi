@@ -45,6 +45,17 @@ buttonContainer.addEventListener('click', (event) => {
   tituloPrincipal.textContent = titulos[vistaButton];
 });
 
+// Html dentro de otro html como si fuesen componentes
 
+// para la terminar 
+// cd C:\Users\engonzalez\Desktop\pokeapi  
+// npx serve 
 
+async function cargarComponente(idContenedor, urlArchivo) {
+  const contenedor = document.getElementById(idContenedor);
+  const respuestaHtml = await fetch(urlArchivo);
+  const html = await respuestaHtml.text();
+  contenedor.innerHTML = html;
+}
 
+cargarComponente('historico-section', 'historico.html');
