@@ -50,12 +50,22 @@ buttonContainer.addEventListener('click', (event) => {
 // para la terminar 
 // cd C:\Users\engonzalez\Desktop\pokeapi  
 // npx serve 
+// Nota: No basta con solo abrir el index.html
 
 async function cargarComponente(idContenedor, urlArchivo) {
   const contenedor = document.getElementById(idContenedor);
   const respuestaHtml = await fetch(urlArchivo);
   const html = await respuestaHtml.text();
   contenedor.innerHTML = html;
+  
+  // Ejecutar los scripts que vienen en el componente
+  const scripts = contenedor.querySelectorAll('script');
+  scripts.forEach(script => {
+    const nuevoScript = document.createElement('script');
+    nuevoScript.textContent = script.textContent;
+    script.remove();
+    document.body.appendChild(nuevoScript);
+  });
 }
 
 cargarComponente('historico-section', 'historico.html');
