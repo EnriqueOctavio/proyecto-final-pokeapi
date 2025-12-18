@@ -54,9 +54,9 @@
       const templates = {
         item: (pokemon) => `
           <div class="historico-item">
-            <div class="historico-imagen-container">
+                <div class="historico-imagen-container">
               <img class="historico-imagen" src="${pokemon.imagen}" alt="${pokemon.nombre}">
-            </div>
+                </div>
             <div class="historico-info">
               <span class="historico-nombre">#${pokemon.id}  ${pokemon.nombre}</span>
               <div class="historico-tipos">
@@ -73,7 +73,11 @@
             </div>
           </div>
         `,
-        vacio: () => '<p class="historico-vacio">No hay Pokémon en el historial</p>',
+        vacio: () => `<div class="historico-vacio">
+                        <span>📜</span>
+                        <h6>No hay Pokémon en el historial</h6>
+                        <p>Busca un Pokémon para agregarlo aquí</p>
+                        </div>`,
       };
 
       const utils = {

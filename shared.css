@@ -523,10 +523,30 @@ h1 {
 
 .historico-vacio {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   font-size: 1.2rem;
   font-weight: bold;
   color: #999;
   padding: 2rem;
   background-color: #fff;
-  border: var(--border-width) dashed var(--border-color);
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.historico-vacio span {
+  font-size: 4rem;
+  margin: 0px;
+}
+
+.historico-vacio h6 {
+  font-size: 1.2rem;
+  margin: 0px;
+  color: var(--color-primary);
+}
+
+.historico-vacio p {
+  font-size: 0.8rem;
+  margin: 0px;
 }
