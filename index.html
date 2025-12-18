@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokeapi QuiQue</title>
+    <link rel="stylesheet" href="shared.css">
+  </head>
+  <body>
+    <div class="pokebola-container">
+      <div class="pokebola">
+        <div class="pokebola-centro"></div>
+      </div>
+    </div>
+    <div class="app-container">
+      <div class="app-container-form">
+        <h1>Pokémon Finder</h1>
+        <div class="buttons-tag-container">
+          <button class="botones button-tag button-tag--active" data-view="buscar">🔎 Buscar</button>
+          <button class="botones button-tag" data-view="historico">📜 Histórico</button>
+          <button class="botones button-tag" data-view="vs">⚔️ VS</button>
+          <button class="botones button-tag" data-view="favoritos">⭐ Favoritos</button>
+        </div>
+        <div>
+          <section class="panel" data-view-panel="buscar">
+            <!-- formulario de búsqueda de pokemones -->
+            <form class="formulario-busqueda">
+              <select class="selector-tipo" id="tipo-busqueda">
+                <option value="pokemon">👾 Pokemon</option>
+                <option value="habilidad">⚡Habilidad</option>
+              </select>
+              <input 
+                type="text" 
+                class="campo-texto" 
+                id="valor-busqueda" 
+                placeholder="NOMBRE O ID"
+              >
+              <button type="submit" class="botones boton-buscar">BUSCAR</button>
+            </form>
+          </section>
+
+          <section class="panel" data-view-panel="historico">
+            <!-- lista de búsquedas anteriores -->
+             <h1>Histórico</h1>
+          </section>
+
+          <section class="panel" data-view-panel="vs">
+            <!-- comparador de pokémon -->
+             <h1>VS</h1>
+          </section>
+
+          <section class="panel" data-view-panel="favoritos">
+            <!-- pokémon favoritos -->
+             <h1>Favoritos</h1>
+          </section>
+        </div>
+      </div>
+    </div>
+    <script src="shared.js"></script>
+  </body>
+  
+</html>

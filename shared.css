@@ -1,0 +1,219 @@
+*,
+*::before,
+*::after{
+  box-sizing: border-box;
+}
+
+:root {
+  /* Colores principales */
+  --color-bg: #f5e6d3;           /* Fondo beige */
+  --color-primary: #2d2d2d;      /* Negro/Gris oscuro */
+  --color-accent: #ffcc00;       /* Amarillo Pokémon */
+  --color-secondary: #ff6b6b;    /* Rojo coral */
+  
+  /* Colores de estado */
+  --color-success: #4ecdc4;      /* Verde agua */
+  --color-error: #ff6b6b;        /* Rojo */
+  --color-warning: #ffa500;      /* Naranja */
+  
+  /* Badges de origen */
+  --color-api: #4ecdc4;          /* Verde agua - datos de API */
+  --color-cache: #ffcc00;        /* Amarillo - datos cacheados */
+  --color-expired: #ffa500;      /* Naranja - caché expirado */
+  
+  /* Bordes y sombras */
+  --border-width: 4px;
+  --border-color: #2d2d2d;
+  --shadow: 6px 6px 0px #2d2d2d;
+  --shadow-hover: 8px 8px 0px #2d2d2d;
+  --shadow-active: 4px 4px 0px #2d2d2d;
+  
+  /* Tipografía */
+  --font-family: 'Courier New', monospace;
+}
+
+html, body{
+  padding: 0;
+  margin: 0;
+}
+
+body{
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  background-image: radial-gradient(var(--color-primary) 1px, transparent 1px);
+  background-size: 22px 22px;
+  font-family: var(--font-family);
+  color: var(--color-primary);
+}
+
+.pokebola-container{
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 80px;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.pokebola {
+  width: 540px;           
+  height: 540px;
+  border-radius: 50%;
+  border: 12px solid var(--color-primary);
+  overflow: hidden;
+
+  background:
+    linear-gradient(var(--color-primary), var(--color-primary)) center / 120% 10% no-repeat,
+    linear-gradient(
+      180deg,
+      var(--color-secondary) 0 50%,
+      #fff 50% 100%
+    )
+    var(--color-primary);
+
+  transform: rotate(-15deg);
+  box-shadow: 20px 16px 0 rgba(0, 0, 0, 0.3);
+}
+
+.pokebola::after{
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: #fff;
+  border: 12px solid var(--color-primary);
+  transform: translate(-50%, -50%);
+}
+
+.app-container{
+  position: relative;
+  padding-top: 52px;
+  width: 100%;
+  min-height: 400px;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+}
+
+.app-container-form{
+  width: 700px;
+  min-height: 40px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+}
+
+h1 {
+  background-color:var(--color-success);
+  text-align: center;
+  color: var(--color-primary);
+  font-weight: 800;
+  font-family: var(--font-family);
+  font-size: 4rem;
+  text-transform: uppercase;
+  padding: 1.4rem 2.5rem;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  width: 500px;
+  height: 90px;
+  transform: rotate(-3deg);
+}
+
+.buttons-tag-container{
+  display: flex;
+  gap: 1.5rem;
+}
+
+.botones {
+  padding: 0.8rem 1.5rem;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  font-family: var(--font-family);
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+
+.botones:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.botones:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-active);
+}
+
+/* botones de las pestañas */
+.button-tag{
+  background-color:#fff;
+}
+
+.button-tag--active{
+  background-color: var(--color-api)
+}
+
+.view-panel[hidden] {
+  display: none;
+}
+
+/* estilos del formulario de busqueda */
+
+.formulario-busqueda {
+  margin: 2rem 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.selector-tipo {
+  background-color: var(--color-accent);
+  border: var(--border-width) solid var(--border-color);
+  padding: 0.8rem 1.2rem;
+  font-family: var(--font-family);
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  outline: none;
+}
+
+
+.campo-texto {
+  border: var(--border-width) solid var(--border-color);
+  padding: 0.8rem 1rem;
+  font-family: var(--font-family);
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #fff;
+  width: 200px;
+  box-shadow: var(--shadow);
+}
+
+.campo-texto::placeholder {
+  color: #999;
+}
+
+.campo-texto:focus {
+  outline: none;
+}
+
+.boton-buscar {
+  background-color: var(--color-secondary);
+  color: #fff;
+}
+
+.boton-buscar:hover {
+  background-color: #ca2929;
+}
+
