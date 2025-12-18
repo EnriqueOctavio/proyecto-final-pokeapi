@@ -19,7 +19,7 @@ const titulos = {
   buscar: 'Pokémon Finder',
   historico: '📜 Histórico',
   vs: '⚔️ VS',
-  favoritos: '⭐ Favoritos'
+  favoritos: '❤️ Favoritos'
 };
 
 panels.forEach((panel) => { //Esto lo hice para mostrar el panel de buscar primero
