@@ -1,17 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokeapi QuiQue</title>
-    <link rel="stylesheet" href="shared.css">
-  </head>
-  <body>
-    <div class="pokebola-container">
-      <div class="pokebola">
-        <div class="pokebola-centro"></div>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokeapi QuiQue y Torres</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+
+<body>
+  <div class="pokebola-container">
+    <div class="pokebola">
+      <div class="pokebola-centro"></div>
     </div>
+  </div>
+
+  <div class="app-container">
+    <div class="app-container-form">
+      <h1>Pokémon Finder</h1>
+
+      <div class="buttons-tag-container">
+        <button class="botones button-tag button-tag--active" data-view="buscar">🔎 Buscar</button>
+        <button class="botones button-tag" data-view="historico">📜 Histórico</button>
+        <button class="botones button-tag" data-view="vs">⚔️ VS</button>
+        <button class="botones button-tag" data-view="favoritos">⭐ Favoritos</button>
+      </div>
+
+      <div>
+        <section class="panel" data-view-panel="buscar">
+
+          <form id="form-busqueda" class="formulario-busqueda">
+            <select class="selector-tipo" id="tipo-busqueda">
+              <option value="pokemon">👾 Pokémon</option>
+              <option value="habilidad">⚡ Habilidad</option>
+            </select>
+
+            <input
+              type="text"
+              class="campo-texto"
+              id="valor-busqueda"
+              placeholder="NOMBRE O ID"
+            >
+
+            <button type="submit" class="botones boton-buscar">BUSCAR</button>
+          </form>
+
+          <div class="resultado-busqueda">
+            <div class="pokemon-card" id="pokemon-card">
+
+              <div class="card-tag-container">
+                <span class="card-tag-tipo">POKEMON_DATA</span>
+                <span id="origenDatos" class="card-tag-origen">🌐 DESDE API</span>
+              </div>
+
+              <div class="card-imagen-container">
+                <img
+                  id="pokemonImagen"
+                  class="card-imagen"
+                  src=""
+                  alt="pokemon"
+                >
+              </div>
+
+              <div class="card-info-container">
+
+                <div class="card-nombre-container pokemon-info">
+                  <span id="iDPokemon" class="id-pokemon"></span>
+                  <span id="nombrePokemon" class="nombre-pokemon"></span>
     <div class="app-container">
       <div class="app-container-form">
         <h1 id="titulo-principal">Pokémon Finder</h1>
@@ -46,103 +100,44 @@
                   <span class="card-tag-tipo">POKEMON_DATA</span>
                   <span class="card-tag-origen">🌐 DESDE API</span>
                 </div>
-  
-                <!-- imagen del pokemon -->
-                <div class="card-imagen-container">
-                  <img class="card-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Bulbasaur">
+
+                <div class="card-tipos"></div>
+
+                <div class="habilidades-container">
+                  <h3>HABILIDADES</h3>
+                  <div class="card-habilidades"></div>
                 </div>
-  
-                <div class="card-info-container">
-                  <!-- nombre y numero -->
-                  <div class="card-nombre-container">
-                    <span class="id-pokemon">#1 </span>
-                    <span class="nombre-pokemon"> BULBASAUR</span>
-                  </div>
-    
-                  <!-- tipos del pokemon -->
-                  <div class="card-tipos">
-                    <span class="tipo-tag">GRASS</span>
-                    <span class="tipo-tag">POISON</span>
-                  </div>
 
-                  <!-- habilidades -->
-                  <div class="habilidades-container">
-                    <h3>HABILIDADES</h3>
-                    <div class="card-habilidades">
-                      <span class="botones habilidad-tag">Overgrow</span>
-                      <span class="botones habilidad-tag-2">Chlorophyll (Oculta)</span>
-                    </div>
-                  </div>
+                <div class="stats-container card-stats"></div>
 
-                  <!-- stats del pokemon -->
-                  <div class="stats-container">
-                    <div class="stat-fila">
-                      <span class="stat-nombre">HP:</span>
-                      <div class="stat-barra-container">
-                        <div class="stat-barra" style="width: 45%;"></div>
-                      </div>
-                    </div>
-                    <div class="stat-fila">
-                      <span class="stat-nombre">ATTACK:</span>
-                      <div class="stat-barra-container">
-                        <div class="stat-barra" style="width: 49%;"></div>
-                      </div>
-                    </div>
-                    <div class="stat-fila">
-                      <span class="stat-nombre">DEFENSE:</span>
-                      <div class="stat-barra-container">
-                        <div class="stat-barra" style="width: 49%;"></div>
-                      </div>
-                    </div>
-                    <div class="stat-fila">
-                      <span class="stat-nombre">SPECIAL-ATTACK:</span>
-                      <div class="stat-barra-container">
-                        <div class="stat-barra" style="width: 65%;"></div>
-                      </div>
-                    </div>
-                    <div class="stat-fila">
-                      <span class="stat-nombre">SPECIAL-DEFENSE:</span>
-                      <div class="stat-barra-container">
-                        <div class="stat-barra" style="width: 65%;"></div>
-                      </div>
-                    </div>
-                    <div class="stat-fila">
-                      <span class="stat-nombre">SPEED:</span>
-                      <div class="stat-barra-container">
-                        <div class="stat-barra" style="width: 45%;"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- boton de favoritos -->
-                  <div class="favorito-container">
-                    <button class="botones boton-favorito">❤️</button>
-                  </div>
-
-                  <!-- evoluciones -->
-                  <div class="evoluciones-seccion">
-                    <h3 class="evoluciones-titulo">CADENA DE EVOLUCIÓN</h3>
-                    <div class="evoluciones-container">
-                      <div class="botones evolucion-actual">
-                        <img class="evolucion-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Bulbasaur">
-                        <span class="evolucion-nombre">BULBASAUR</span>
-                      </div>
-                      <span class="evolucion-flecha">➡️</span>
-                      <div class="botones otras-evoluciones">
-                        <img class="evolucion-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png" alt="Ivysaur">
-                        <span class="evolucion-nombre">IVYSAUR</span>
-                      </div>
-                      <span class="evolucion-flecha">➡️</span>
-                      <div class="botones otras-evoluciones">
-                        <img class="evolucion-imagen" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png" alt="Venusaur">
-                        <span class="evolucion-nombre">VENUSAUR</span>
-                      </div>
-                    </div>
-                  </div>
-                  
+                <div class="favorito-container">
+                  <button class="botones boton-favorito">❤️</button>
                 </div>
+
+                <div class="evoluciones-seccion">
+                  <h3 class="evoluciones-titulo">CADENA DE EVOLUCIÓN</h3>
+                  <div class="evoluciones-container"></div>
+                </div>
+
               </div>
             </div>
+          </div>
+
+          <div id="result"></div>
+        </section>
+
+        <section class="panel" data-view-panel="historico">
+          <h1>Histórico</h1>
+        </section>
+
+        <section class="panel" data-view-panel="vs">
+          <h1>VS</h1>
+        </section>
+
+        <section class="panel" data-view-panel="favoritos">
+          <h1>Favoritos</h1>
+        </section>
+
           </section>
 
           <section class="panel" data-view-panel="historico">
@@ -159,7 +154,8 @@
         </div>
       </div>
     </div>
-    <script src="shared.js"></script>
-  </body>
-  
+  </div>
+
+  <script src="shared.js"></script>
+</body>
 </html>
