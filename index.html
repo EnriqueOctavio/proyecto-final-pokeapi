@@ -66,6 +66,39 @@
                 <div class="card-nombre-container pokemon-info">
                   <span id="iDPokemon" class="id-pokemon"></span>
                   <span id="nombrePokemon" class="nombre-pokemon"></span>
+    <div class="app-container">
+      <div class="app-container-form">
+        <h1 id="titulo-principal">Pokémon Finder</h1>
+        <div class="buttons-tag-container">
+          <button class="botones button-tag button-tag--active" data-view="buscar">🔎 Buscar</button>
+          <button class="botones button-tag" data-view="historico">📜 Histórico</button>
+          <button class="botones button-tag" data-view="vs">⚔️ VS</button>
+          <button class="botones button-tag" data-view="favoritos">❤️ Favoritos</button>
+        </div>
+        <div>
+          <section class="panel" data-view-panel="buscar">
+            <!-- formulario de búsqueda de pokemones -->
+            <form class="formulario-busqueda">
+              <select class="selector-tipo" id="tipo-busqueda">
+                <option value="pokemon">👾 Pokemon</option>
+                <option value="habilidad">⚡Habilidad</option>
+              </select>
+              <input 
+                type="text" 
+                class="campo-texto" 
+                id="valor-busqueda" 
+                placeholder="NOMBRE O ID"
+              >
+              <button type="submit" class="botones boton-buscar">BUSCAR</button>
+            </form>
+
+            <!-- card del pokemon -->
+            <div class="resultado-busqueda">
+              <div class="pokemon-card" id="pokemon-card">
+                <!-- header de la card -->
+                <div class="card-tag-container">
+                  <span class="card-tag-tipo">POKEMON_DATA</span>
+                  <span class="card-tag-origen">🌐 DESDE API</span>
                 </div>
 
                 <div class="card-tipos"></div>
@@ -105,6 +138,20 @@
           <h1>Favoritos</h1>
         </section>
 
+          </section>
+
+          <section class="panel" data-view-panel="historico">
+             <div id="historico-section"></div>
+          </section>
+
+          <section class="panel" data-view-panel="vs">
+             <div id="vs-section"></div>
+          </section>
+
+          <section class="panel" data-view-panel="favoritos">
+            <div id="favoritos-section"></div>
+          </section>
+        </div>
       </div>
     </div>
   </div>

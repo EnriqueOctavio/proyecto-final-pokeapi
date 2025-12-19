@@ -113,7 +113,9 @@ body{
 
 h1 {
   background-color:var(--color-success);
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--color-primary);
   font-weight: 800;
   font-family: var(--font-family);
@@ -122,7 +124,6 @@ h1 {
   padding: 1.4rem 2.5rem;
   border: var(--border-width) solid var(--border-color);
   box-shadow: var(--shadow);
-  width: 500px;
   height: 90px;
   transform: rotate(-3deg);
 }
@@ -487,4 +488,227 @@ h1 {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+/* Estilos del historico */
+
+.historico-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  width: 420px;
+}
+
+.historico-lista {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.historico-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: #fff;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  padding: 0.8rem;
+}
+
+.historico-imagen {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border: var(--border-width) solid var(--border-color);
+}
+
+.historico-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.historico-nombre {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.historico-tipos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.historico-tipo-tag {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.historico-acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.boton-favorito-mini {
+  background-color: var(--color-error);
+  padding: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.boton-eliminar {
+  background-color: var(--color-bg);
+  padding: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.historico-limpiar-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.boton-limpiar-todo {
+  background-color: var(--color-error);
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.boton-limpiar-todo:hover {
+  background-color: #ca2929;
+}
+
+.historico-vacio {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #999;
+  padding: 2rem;
+  background-color: #fff;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.historico-vacio span {
+  font-size: 4rem;
+  margin: 0px;
+}
+
+.historico-vacio h6 {
+  font-size: 1.2rem;
+  margin: 0px;
+  color: var(--color-primary);
+}
+
+.historico-vacio p {
+  font-size: 0.8rem;
+  margin: 0px;
+}
+
+/* ========== ESTILOS DE FAVORITOS ========== */
+
+.favoritos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  width: 420px;
+}
+
+.favoritos-lista {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.favoritos-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: #fff;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  padding: 0.8rem;
+}
+
+.favoritos-imagen {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border: var(--border-width) solid var(--border-color);
+}
+
+.favoritos-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.favoritos-nombre {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.favoritos-tipos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.favoritos-tipo-tag {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.favoritos-acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.favoritos-limpiar-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.favoritos-vacio {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #999;
+  padding: 2rem;
+  background-color: #fff;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.favoritos-vacio span {
+  font-size: 4rem;
+  margin: 0px;
+}
+
+.favoritos-vacio h6 {
+  font-size: 1.2rem;
+  margin: 0px;
+  color: var(--color-primary);
+}
+
+.favoritos-vacio p {
+  font-size: 0.8rem;
+  margin: 0px;
 }

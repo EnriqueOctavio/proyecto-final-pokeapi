@@ -3,6 +3,16 @@ const buttonTag = document.querySelectorAll('.button-tag');
 const panels = document.querySelectorAll('[data-view-panel]');
 const input = document.getElementById('valor-busqueda');
 const form = document.getElementById('form-busqueda');
+const buttonTag = document.querySelectorAll('.button-tag')
+const panels = document.querySelectorAll('[data-view-panel]')
+const tituloPrincipal = document.getElementById('titulo-principal');
+
+const titulos = {
+  buscar: 'Pokémon Finder',
+  historico: '📜 Histórico',
+  vs: '⚔️ VS',
+  favoritos: '❤️ Favoritos'
+};
 
 panels.forEach(panel => {
   panel.hidden = panel.dataset.viewPanel !== 'buscar';
@@ -20,6 +30,8 @@ buttonContainer.addEventListener('click', (event) => {
   panels.forEach(panel => {
     panel.hidden = panel.dataset.viewPanel !== vistaButton;
   });
+
+  tituloPrincipal.textContent = titulos[vistaButton];
 });
 
 function getIdFromUrl(url) {
@@ -362,4 +374,29 @@ form.addEventListener('submit', (e) => {
   e.preventDefault();
   searchEvolution();
 });
+// Html dentro de otro html como si fuesen componentes
 
+// para la terminar 
+// cd C:\Users\engonzalez\Desktop\pokeapi  
+// npx serve 
+// Nota: No basta con solo abrir el index.html
+
+async function cargarComponente(idContenedor, urlArchivo) {
+  const contenedor = document.getElementById(idContenedor);
+  const respuestaHtml = await fetch(urlArchivo);
+  const html = await respuestaHtml.text();
+  contenedor.innerHTML = html;
+  
+  // Ejecutar los scripts que vienen en el componente
+  const scripts = contenedor.querySelectorAll('script');
+  scripts.forEach(script => {
+    const nuevoScript = document.createElement('script');
+    nuevoScript.textContent = script.textContent;
+    script.remove();
+    document.body.appendChild(nuevoScript);
+  });
+}
+
+cargarComponente('historico-section', 'historico.html');
+cargarComponente('vs-section', 'vs.html');
+cargarComponente('favoritos-section', 'favoritos.html');

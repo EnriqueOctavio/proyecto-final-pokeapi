@@ -1,0 +1,103 @@
+<div class="favoritos-container">
+  <div class="favoritos-lista" id="favoritos-lista"></div>
+  <div class="favoritos-limpiar-container">
+    <button class="botones boton-limpiar-todo" id="btn-limpiar-favoritos">
+        🗑️ LIMPIAR TODO
+    </button>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const FavoritosApp = (() => {
+      // Datos de prueba para favoritos
+      const dataDePrueba = {
+        favoritos: [
+          {
+            id: 1,
+            nombre: "BULBASAUR",
+            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+            tipos: ["GRASS", "POISON"]
+          },
+          {
+            id: 2,
+            nombre: "IVYSAUR",
+            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png",
+            tipos: ["GRASS", "POISON"]
+          },
+          {
+            id: 3,
+            nombre: "VENUSAUR",
+            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+            tipos: ["GRASS", "POISON"]
+          }
+        ]
+      };
+
+      const htmlElements = {
+        lista: document.getElementById('favoritos-lista'),
+        btnLimpiar: document.getElementById('btn-limpiar-favoritos'),
+      };
+
+      const templates = {
+        item: (pokemon) => `
+          <div class="favoritos-item">
+            <div class="favoritos-imagen-container">
+              <img class="favoritos-imagen" src="${pokemon.imagen}" alt="${pokemon.nombre}">
+            </div>
+            <div class="favoritos-info">
+              <span class="favoritos-nombre">#${pokemon.id}  ${pokemon.nombre}</span>
+              <div class="favoritos-tipos">
+                ${pokemon.tipos.map(tipo => `<span class="favoritos-tipo-tag">${tipo}</span>`).join('')}
+              </div>
+            </div>
+            <div class="favoritos-acciones">
+              <button class="botones boton-eliminar" data-id="${pokemon.id}">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `,
+        vacio: () => `<div class="favoritos-vacio">
+                        <span>❤️</span>
+                        <h6>No hay Pokémon en favoritos</h6>
+                        <p>Busca a un pokemon y marcalo como favorito</p>
+                      </div>`,
+      };
+
+      const utils = {
+        render() {
+          if (dataDePrueba.favoritos.length === 0) {
+            htmlElements.lista.innerHTML = templates.vacio();
+            return;
+          }
+          htmlElements.lista.innerHTML = dataDePrueba.favoritos.map(pokemon => templates.item(pokemon)).join('');
+        }
+      };
+
+      const handlers = {
+        onLimpiarClick() {
+          dataDePrueba.favoritos.length = 0;
+          utils.render();
+        },
+        onEliminarClick(e) {
+          const id = parseInt(e.target.dataset.id);
+          const index = dataDePrueba.favoritos.findIndex(p => p.id === id);
+          if (index > -1) {
+            dataDePrueba.favoritos.splice(index, 1);
+            utils.render();
+          }
+        }
+      };
+
+      return {
+        init() {
+          htmlElements.btnLimpiar.addEventListener('click', handlers.onLimpiarClick);
+          utils.render();
+        }
+      };
+    })();
+
+    FavoritosApp.init();
+  })();
+</script>
