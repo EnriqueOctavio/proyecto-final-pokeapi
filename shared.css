@@ -316,6 +316,17 @@ h1 {
   color: #fff;
   font-size: 0.8rem;
   padding: 0.2rem 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.card-tag-origen.origen-api {
+  background-color: var(--color-api);
+  color: var(--color-primary);
+}
+
+.card-tag-origen.origen-cache {
+  background-color: var(--color-cache);
+  color: var(--color-primary);
 }
 
 
@@ -423,6 +434,7 @@ h1 {
 
 .card-habilidades{
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 

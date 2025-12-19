@@ -13,7 +13,7 @@ const habilidadCard = document.getElementById('habilidad-card');
 const pokemon_card_template = `
   <div class="card-tag-container">
     <span class="card-tag-tipo">POKEMON_DATA</span>
-    <span id="origenDatos" class="card-tag-origen">🌐 DESDE API</span>
+    <span id="origenDatos" class="card-tag-origen origen-api">🌐 API</span>
   </div>
 
   <div class="card-imagen-container">
@@ -543,10 +543,10 @@ function setOrigen(origen) { // Muestra el origen de los datos de los pokemon (a
   etiqueta.classList.remove('origen-api', 'origen-cache');
 
   if (origen === 'cache') {
-    etiqueta.textContent = 'DESDE CACHÉ';
+    etiqueta.textContent = '📦 CACHÉ';
     etiqueta.classList.add('origen-cache');
   } else {
-    etiqueta.textContent = 'DESDE API';
+    etiqueta.textContent = '🌐 API';
     etiqueta.classList.add('origen-api');
   }
 }
