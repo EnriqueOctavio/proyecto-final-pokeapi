@@ -228,6 +228,7 @@ h1 {
 /* estilos del formulario de busqueda */
 
 .formulario-busqueda {
+  position: relative;
   margin: 2rem 1rem;
   display: flex;
   gap: 1rem;
@@ -1555,8 +1556,10 @@ h1 {
 
 .autocompletarlista {
   position: absolute;
+  top:20px;
+  right: 20%;
+
   background: var(--card-bg, #fff);
-  border: 1px solid #ccc;
   width: 50%;
   max-height: 220px;
   overflow-y: auto;
