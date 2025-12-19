@@ -718,3 +718,31 @@ function render_abilityCard(habilidad, origen) {
   });
 }
 
+
+// ==================== MODO OSCURO ====================
+function toggleDarkMode() {
+  const body = document.body;
+  const btn = document.getElementById('btn-dark-mode');
+  
+  body.classList.toggle('dark-mode');
+  
+  // Cambiar el icono del botón
+  if (body.classList.contains('dark-mode')) {
+    btn.textContent = '☀️';
+    localStorage.setItem('darkMode', 'enabled');
+  } else {
+    btn.textContent = '🌙';
+    localStorage.setItem('darkMode', 'disabled');
+  }
+}
+
+// Cargar preferencia de modo oscuro al iniciar
+(function loadDarkModePreference() {
+  const darkMode = localStorage.getItem('darkMode');
+  const btn = document.getElementById('btn-dark-mode');
+  
+  if (darkMode === 'enabled') {
+    document.body.classList.add('dark-mode');
+    if (btn) btn.textContent = '☀️';
+  }
+})();

@@ -32,6 +32,43 @@
   --font-family: 'Courier New', monospace;
 }
 
+/* Modo Oscuro */
+body.dark-mode {
+  --color-bg: #1a1a2e;           /* Fondo azul oscuro */
+  background-color: var(--color-bg);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+}
+
+/* Botón de modo oscuro */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary);
+  background-color: var(--color-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-mode-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.dark-mode-toggle:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-active);
+}
+
 
 html, body{
   padding: 0;
