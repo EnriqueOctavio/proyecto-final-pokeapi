@@ -1144,7 +1144,7 @@ h1 {
 .vs-card-origen {
   position: absolute;
   right: 0;
-  width: 60px;
+  width: 80px;
   padding: 0.3rem 0.6rem;
   font-size: 0.7rem;
   font-weight: bold;
@@ -1228,7 +1228,7 @@ h1 {
   background-color: var(--color-primary);
   color: #fff;
   padding: 0.4rem 0.8rem;
-  font-size: 0.75rem;
+  font-size: 0.5rem;
   font-weight: bold;
 }
 
@@ -1344,9 +1344,8 @@ h1 {
 }
 
 .batalla-card--ganador {
-  border-color: #4ecdc4;
-  background-color: #e8fff8;
-  box-shadow: 8px 8px 0px #4ecdc4;
+  border-color: var(--color-primary);
+  background-color: var(--color-api);
 }
 
 .batalla-card--perdedor {
@@ -1460,18 +1459,19 @@ h1 {
 
 .ventaja-item {
   padding: 0.8rem 1rem;
-  border-left: 5px solid #ccc;
-  background-color: #f5f5f5;
+  border-left: 5px solid var(--color-primary);
+  background-color: var(--color-api);
+  opacity: 0.7;
 }
 
 .ventaja-favorable {
-  background-color: #ffe5e5;
-  border-left-color: #ff6b6b;
+  background-color: var(--color-api);
+  opacity: 1;
 }
 
 .ventaja-desfavorable {
-  background-color: #e5ffe5;
-  border-left-color: #4ecdc4;
+  background-color: #cfcfcf;
+  opacity: 0.8;
 }
 
 .ventaja-nombre {
@@ -1501,21 +1501,13 @@ h1 {
   display: grid;
   grid-template-columns: 40px 1fr 60px 1fr 40px;
   align-items: center;
-  gap: 0.5rem;
 }
 
 .stats-valor {
   font-size: 0.9rem;
   font-weight: bold;
   text-align: center;
-}
-
-.stats-valor-izq {
-  text-align: right;
-}
-
-.stats-valor-der {
-  text-align: left;
+  
 }
 
 .stats-ganador {

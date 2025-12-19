@@ -74,8 +74,11 @@ buttonContainer.addEventListener('click', (event) => {
     panel.hidden = panel.dataset.viewPanel !== vistaButton;
   });
 
+  
+
   tituloPrincipal.textContent = titulos[vistaButton];
 });
+
 
 // Html dentro de otro html como si fuesen componentes
 
@@ -739,8 +742,6 @@ function render_abilityCard(habilidad, origen) {
   });
 }
 
-
-// ==================== MODO OSCURO ====================
 function toggleDarkMode() {
   const body = document.body;
   const btn = document.getElementById('btn-dark-mode');
@@ -757,7 +758,6 @@ function toggleDarkMode() {
   }
 }
 
-// Cargar preferencia de modo oscuro al iniciar
 (function loadDarkModePreference() {
   const darkMode = localStorage.getItem('darkMode');
   const btn = document.getElementById('btn-dark-mode');

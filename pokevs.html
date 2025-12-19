@@ -50,7 +50,6 @@
   <div class="vs-resultado" id="vs-resultado">
     <div class="vs-resultado-vacio">
       <span>⚔️</span>
-      <p>Selecciona dos Pokémon y presiona ¡BATALLAR!</p>
     </div>
   </div>
 
@@ -155,22 +154,11 @@
 
   // Obtener datos de un tipo de la API
   async function obtenerDatosTipo(nombreTipo) {
-    if (tiposCache[nombreTipo]) {
-      return tiposCache[nombreTipo];
-    }
 
-    var cacheKey = 'tipo_' + nombreTipo;
-    var cached = getCache(cacheKey);
-    if (cached) {
-      tiposCache[nombreTipo] = cached;
-      return cached;
-    }
+    var tipoDelPoke = 'tipo_' + nombreTipo;
 
     var res = await fetch('https://pokeapi.co/api/v2/type/' + nombreTipo);
     var data = await res.json();
-    
-    save_cache(cacheKey, data);
-    tiposCache[nombreTipo] = data;
     
     return data;
   }
@@ -184,7 +172,8 @@
       var tipoAtacante = tiposAtacante[i].type.name;
       var datosTipo = await obtenerDatosTipo(tipoAtacante);
       
-      // Verificar doble daño (super efectivo)
+      console.log(datosTipo);
+      
       var dobleDano = datosTipo.damage_relations.double_damage_to;
       for (var j = 0; j < dobleDano.length; j++) {
         for (var k = 0; k < tiposDefensor.length; k++) {
@@ -194,7 +183,7 @@
         }
       }
       
-      // Verificar medio daño (poco efectivo)
+      
       var medioDano = datosTipo.damage_relations.half_damage_to;
       for (var j = 0; j < medioDano.length; j++) {
         for (var k = 0; k < tiposDefensor.length; k++) {
@@ -204,7 +193,7 @@
         }
       }
       
-      // Verificar sin daño (inmune)
+      
       var sinDano = datosTipo.damage_relations.no_damage_to;
       for (var j = 0; j < sinDano.length; j++) {
         for (var k = 0; k < tiposDefensor.length; k++) {
@@ -214,22 +203,28 @@
         }
       }
     }
-    
+
+    console.log('multiplicador', multiplicador);
     return multiplicador;
+    
   }
 
 
-  // Calcular stats base totales
+
   function calcularStatsTotal(pokemon) {
     var total = 0;
     for (var i = 0; i < pokemon.stats.length; i++) {
+
       total += pokemon.stats[i].base_stat;
     }
+
+
+    console.log('total de base', total);
     return total;
   }
 
 
-  // Obtener descripción de efectividad
+  
   function obtenerDescripcionEfectividad(multiplicador, tipoAtacante, tipoDefensor) {
     if (multiplicador >= 2.0) {
       return tipoAtacante + ' es súper efectivo contra ' + tipoDefensor;
@@ -243,7 +238,7 @@
   }
 
 
-  // Nombres de stats en español
+  // Nombres de stats
   var nombresStats = {
     'hp': 'HP',
     'attack': 'ATK',
@@ -254,7 +249,7 @@
   };
 
 
-  // Generar HTML de comparación de stats
+  
   function generarComparacionStats(p1, p2) {
     var html = '';
     var maxStat = 200; // Valor máximo para las barras
@@ -287,7 +282,7 @@
   }
 
 
-  // Buscar pokemon (usa las funciones de shared.js)
+  // Buscar pokemon 
   async function buscar_pokemon_vs(nombre, numero) {
     var card = numero === 1 ? elems.cardP1 : elems.cardP2;
     var origen = numero === 1 ? elems.origenP1 : elems.origenP2;
@@ -341,7 +336,7 @@
   }
 
 
-  // Verificar si se puede batallar
+  // Validación extra para que valide si se puede batallar (si los imputs estan vacios)
   function verificar_batallar() {
     elems.btnBatallar.disabled = !(pokemon1 && pokemon2);
   }
@@ -355,15 +350,15 @@
     elems.resultado.innerHTML = '<div class="estado-cargando"><p>Calculando batalla...</p></div>';
 
     try {
-      // Calcular multiplicadores de tipo
+      
       var mult1vs2 = await calcularMultiplicadorTipo(pokemon1.types, pokemon2.types);
       var mult2vs1 = await calcularMultiplicadorTipo(pokemon2.types, pokemon1.types);
 
-      // Calcular stats base totales
+      
       var statsTotal1 = calcularStatsTotal(pokemon1);
       var statsTotal2 = calcularStatsTotal(pokemon2);
 
-      // Calcular puntajes finales
+      
       var puntaje1 = statsTotal1 * mult1vs2;
       var puntaje2 = statsTotal2 * mult2vs1;
 
@@ -374,15 +369,15 @@
       var tipo1 = pokemon1.types.map(function(t) { return t.type.name; }).join('/');
       var tipo2 = pokemon2.types.map(function(t) { return t.type.name; }).join('/');
 
-      // Generar descripciones de efectividad
+      
       var desc1vs2 = obtenerDescripcionEfectividad(mult1vs2, tipo1, tipo2);
       var desc2vs1 = obtenerDescripcionEfectividad(mult2vs1, tipo2, tipo1);
 
-      // Verificar favoritos
+      
       var esFav1 = verificarSiEsFavorito(pokemon1.id);
       var esFav2 = verificarSiEsFavorito(pokemon2.id);
 
-      // Generar HTML del resultado
+      
       var resultadoHTML = 
         '<div class="batalla-resultado">' +
           
@@ -435,9 +430,11 @@
 
         '</div>';
 
+
+
       elems.resultado.innerHTML = resultadoHTML;
 
-      // Agregar eventos a los botones de favoritos en el resultado
+    
       var btnsResultado = elems.resultado.querySelectorAll('.batalla-btn-favorito');
       btnsResultado.forEach(function(btn, index) {
         var poke = index === 0 ? pokemon1 : pokemon2;
@@ -460,33 +457,22 @@
   }
 
 
-  // Event listeners
+
   elems.btnBuscarP1.addEventListener('click', function() {
     var nombre = elems.inputP1.value;
     if (nombre) buscar_pokemon_vs(nombre, 1);
   });
+
+
 
   elems.btnBuscarP2.addEventListener('click', function() {
     var nombre = elems.inputP2.value;
     if (nombre) buscar_pokemon_vs(nombre, 2);
   });
 
-  elems.inputP1.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      var nombre = elems.inputP1.value;
-      if (nombre) buscar_pokemon_vs(nombre, 1);
-    }
-  });
-
-  elems.inputP2.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      var nombre = elems.inputP2.value;
-      if (nombre) buscar_pokemon_vs(nombre, 2);
-    }
-  });
 
 
-  // Evento de batallar
+  
   elems.btnBatallar.addEventListener('click', function() {
     ejecutarBatalla();
   });
