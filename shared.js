@@ -32,11 +32,119 @@ buttonContainer.addEventListener('click', (event) => {
   tituloPrincipal.textContent = titulos[vistaButton];
 });
 
-function getIdFromUrl(url) {
+// Html dentro de otro html como si fuesen componentes
+
+// para la terminar 
+// cd C:\Users\engonzalez\Desktop\pokeapi  
+// npx serve 
+// Nota: No basta con solo abrir el index.html
+
+async function cargarComponente(idContenedor, urlArchivo) {
+  const contenedor = document.getElementById(idContenedor);
+  const respuestaHtml = await fetch(urlArchivo);
+  const html = await respuestaHtml.text();
+  contenedor.innerHTML = html;
+  
+  // Ejecutar los scripts que vienen en el componente
+  const scripts = contenedor.querySelectorAll('script');
+  scripts.forEach(script => {
+    const nuevoScript = document.createElement('script');
+    nuevoScript.textContent = script.textContent;
+    script.remove();
+    document.body.appendChild(nuevoScript);
+  });
+}
+
+cargarComponente('historico-section', 'historico.html');
+cargarComponente('vs-section', 'vs.html');
+cargarComponente('favoritos-section', 'favoritos.html');
+
+
+//Acá estamos llamando el pokemon de la api y guardando en la cache
+
+async function obtenerPokemon(nombre) {
+  const key = `pokemon_${nombre}`;
+  const cache = obtenerDeCache(key);
+
+  if (cache) {
+    return { data: cache, origen: 'cache' };
+  }
+
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${nombre}`);
+  if (!res.ok) throw new Error('Pokémon no encontrado');
+
+  const data = await res.json();
+  guardarEnCache(key, data);
+
+  return { data, origen: 'api' };
+}
+
+// Obtiene la evolucion del pokemon de la api
+//Acá estamos llamando la evolucion del pokemon de la api y guardando en la cache
+async function obtenerEvolucion(speciesUrl) { 
+  const key = `evo_${speciesUrl}`;
+  const cache = obtenerDeCache(key);
+
+  if (cache) {
+    return { data: cache, origen: 'cache' };
+  }
+
+  const speciesRes = await fetch(speciesUrl);
+  const speciesData = await speciesRes.json();
+
+  const evoRes = await fetch(speciesData.evolution_chain.url);
+  const evoData = await evoRes.json();
+
+  guardarEnCache(key, evoData);
+  return { data: evoData, origen: 'api' };
+}
+
+async function searchEvolution() { // Busca la evolucion del pokemon
+  const nombrePokemon = input.value.trim().toLowerCase();
+  if (!nombrePokemon) return;
+
+  try {
+    const pokemonResult = await obtenerPokemon(nombrePokemon);
+    const pokemon = pokemonResult.data;
+
+    const evoResult = await obtenerEvolucion(pokemon.species.url);
+
+    const origenFinal =
+      pokemonResult.origen === 'api' || evoResult.origen === 'api'
+        ? 'api'
+        : 'cache';
+
+    renderOrigen(origenFinal);
+
+    document.getElementById('pokemonImagen').src =
+      pokemon.sprites.front_default;
+    document.getElementById('nombrePokemon').textContent =
+      pokemon.name.toUpperCase();
+    document.getElementById('iDPokemon').textContent =
+      `#${pokemon.id}`;
+
+    renderTipos(pokemon.types);
+    renderHabilidades(pokemon.abilities);
+    renderStats(pokemon.stats);
+
+    renderCadenaFinal(
+      evoResult.data.chain,
+      evolucionesContainer,
+      pokemon.name
+    );
+
+  } catch (error) {
+    evolucionesContainer.innerHTML =
+      `<span class="error">${error.message}</span>`;
+    console.error(error);
+  }
+}
+
+function getIdFromUrl(url) { // para obtener el id de la url
   return url.split('/').filter(Boolean).pop();
 }
 
-const typeColors = {
+const typeColors = { // para los colores de los tipos de pokemon
   grass: '#78C850',
   poison: '#A040A0',
   fire: '#F08030',
@@ -57,7 +165,7 @@ const typeColors = {
   flying: '#A890F0'
 };
 
-function renderTipos(types) {
+function renderTipos(types) { // Esto aquí lo hicepara relacionar los tipos de pokemon con los colores
   const container = document.querySelector('.card-tipos');
   container.innerHTML = "";
 
@@ -70,7 +178,7 @@ function renderTipos(types) {
   });
 }
 
-function renderHabilidades(abilities) {
+function renderHabilidades(abilities) { // Esto aquí hace lo mismo pero para las habilidades de los pokemon
   const container = document.querySelector('.card-habilidades');
   container.innerHTML = "";
 
@@ -85,7 +193,7 @@ function renderHabilidades(abilities) {
   });
 }
 
-function renderStats(stats) {
+function renderStats(stats) { // Esto aquí hace lo mismo pero para los stats de los pokemon
   const statsContainer = document.querySelector('.card-stats');
   statsContainer.innerHTML = "";
 
@@ -111,7 +219,7 @@ function renderStats(stats) {
 
 const evolucionesContainer = document.querySelector('.evoluciones-container');
 
-function crearCardEvolucion(nombre, id, esActual = false) {
+function crearCardEvolucion(nombre, id, esActual = false) { //Crea la card con las evoluciones de los pokemon
   const div = document.createElement('div');
   div.className = `botones ${esActual ? 'evolucion-actual' : 'otras-evoluciones'}`;
 
@@ -127,7 +235,7 @@ function crearCardEvolucion(nombre, id, esActual = false) {
   return div;
 }
 
-function obtenerCondicionEvolucion(details) {
+function obtenerCondicionEvolucion(details) { // Obtiene las condiciones de las evoluciones de los pokemon
   if (!details || details.length === 0) return '';
 
   const d = details[0];
@@ -198,14 +306,14 @@ function obtenerCondicionEvolucion(details) {
 }
 
 
-function crearCondicionEvolucion(texto) {
+function crearCondicionEvolucion(texto) { // Crea el texto de las condiciones de las evoluciones de los pokemon
   const span = document.createElement('span');
   span.className = 'evolucion-condicion';
   span.textContent = texto;
   return span;
 }
 
-function renderCadenaFinal(chain, container, pokemonActual) {
+function renderCadenaFinal(chain, container, pokemonActual) { // Renderiza la cadena de evoluciones de los pokemon
   container.innerHTML = "";
 
   function recorrer(nodo) {
@@ -256,7 +364,7 @@ function renderCadenaFinal(chain, container, pokemonActual) {
   recorrer(chain);
 }
 
-function renderOrigen(origen) {
+function renderOrigen(origen) { // Renderiza el origen de los datos de los pokemon (api o cache)
   const badge = document.getElementById('origenDatos');
 
   badge.classList.remove('origen-api', 'origen-cache');
@@ -270,9 +378,9 @@ function renderOrigen(origen) {
   }
 }
 
-const CACHE_TIEMPO = 1000 * 60 * 5; 
+const chachetiempo = 1000 * 60 * 5; 
 
-function guardarEnCache(key, data) {
+function guardarEnCache(key, data) { // Guarda los datos en la cache
   localStorage.setItem(key,JSON.stringify({
       timestamp: Date.now(),
       data
@@ -280,121 +388,19 @@ function guardarEnCache(key, data) {
   );
 }
 
-function obtenerDeCache(key) {
+function obtenerDeCache(key) { // Obtiene los datos de la cache
   const raw = localStorage.getItem(key);
   if (!raw) return null;
 
-  const cache = JSON.parse(raw);
-  if (Date.now() - cache.timestamp > CACHE_TIEMPO) {
+  const cache = JSON.parse(raw); // Convierte el raw a un objeto JSon
+  if (Date.now() - cache.timestamp > chachetiempo) {
     localStorage.removeItem(key);
     return null;
   }
   return cache.data;
 }
 
-async function obtenerPokemon(nombre) {
-  const key = `pokemon_${nombre}`;
-  const cache = obtenerDeCache(key);
-
-  if (cache) {
-    return { data: cache, origen: 'cache' };
-  }
-
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${nombre}`);
-  if (!res.ok) throw new Error('Pokémon no encontrado');
-
-  const data = await res.json();
-  guardarEnCache(key, data);
-
-  return { data, origen: 'api' };
-}
-
-async function obtenerEvolucion(speciesUrl) {
-  const key = `evo_${speciesUrl}`;
-  const cache = obtenerDeCache(key);
-
-  if (cache) {
-    return { data: cache, origen: 'cache' };
-  }
-
-  const speciesRes = await fetch(speciesUrl);
-  const speciesData = await speciesRes.json();
-
-  const evoRes = await fetch(speciesData.evolution_chain.url);
-  const evoData = await evoRes.json();
-
-  guardarEnCache(key, evoData);
-  return { data: evoData, origen: 'api' };
-}
-
-async function searchEvolution() {
-  const nombrePokemon = input.value.trim().toLowerCase();
-  if (!nombrePokemon) return;
-
-  try {
-    const pokemonResult = await obtenerPokemon(nombrePokemon);
-    const pokemon = pokemonResult.data;
-
-    const evoResult = await obtenerEvolucion(pokemon.species.url);
-
-    const origenFinal =
-      pokemonResult.origen === 'api' || evoResult.origen === 'api'
-        ? 'api'
-        : 'cache';
-
-    renderOrigen(origenFinal);
-
-    document.getElementById('pokemonImagen').src =
-      pokemon.sprites.front_default;
-    document.getElementById('nombrePokemon').textContent =
-      pokemon.name.toUpperCase();
-    document.getElementById('iDPokemon').textContent =
-      `#${pokemon.id}`;
-
-    renderTipos(pokemon.types);
-    renderHabilidades(pokemon.abilities);
-    renderStats(pokemon.stats);
-
-    renderCadenaFinal(
-      evoResult.data.chain,
-      evolucionesContainer,
-      pokemon.name
-    );
-
-  } catch (error) {
-    evolucionesContainer.innerHTML =
-      `<span class="error">${error.message}</span>`;
-    console.error(error);
-  }
-}
-
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   searchEvolution();
 });
-// Html dentro de otro html como si fuesen componentes
-
-// para la terminar 
-// cd C:\Users\engonzalez\Desktop\pokeapi  
-// npx serve 
-// Nota: No basta con solo abrir el index.html
-
-async function cargarComponente(idContenedor, urlArchivo) {
-  const contenedor = document.getElementById(idContenedor);
-  const respuestaHtml = await fetch(urlArchivo);
-  const html = await respuestaHtml.text();
-  contenedor.innerHTML = html;
-  
-  // Ejecutar los scripts que vienen en el componente
-  const scripts = contenedor.querySelectorAll('script');
-  scripts.forEach(script => {
-    const nuevoScript = document.createElement('script');
-    nuevoScript.textContent = script.textContent;
-    script.remove();
-    document.body.appendChild(nuevoScript);
-  });
-}
-
-cargarComponente('historico-section', 'historico.html');
-cargarComponente('vs-section', 'vs.html');
-cargarComponente('favoritos-section', 'favoritos.html');
