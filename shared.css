@@ -957,3 +957,558 @@ h1 {
   color: var(--color-secondary);
   text-transform: lowercase;
 }
+
+
+
+/* ========== ESTADOS DE CARGA Y ERROR ========== */
+
+.estado-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.estado-cargando p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0;
+  animation: parpadeo 1s ease-in-out infinite;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+
+.estado-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  background-color: var(--color-error);
+  color: var(--color-primary);
+}
+
+.estado-error h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+
+
+/* ========== SECCION VS ========== */
+
+.vs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+
+.vs-buscadores {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.vs-buscador {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.vs-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.vs-texto {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-secondary);
+}
+
+.vs-btn-buscar {
+  padding: 0.8rem 1rem;
+}
+
+
+.vs-batallar-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.vs-btn-batallar {
+  background-color: var(--color-secondary);
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+}
+
+.vs-btn-batallar:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.vs-btn-batallar:disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow);
+}
+
+
+.vs-cards-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.vs-card {
+  flex: 1;
+  max-width: 180px;
+  min-height: 260px;
+  background-color: #fff;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.vs-card-origen-container {
+  position: relative;
+  width: 100%;
+}
+.vs-card-origen {
+  position: absolute;
+  right: 0;
+  width: 60px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.vs-card-origen.origen-api {
+  background-color: var(--color-api);
+  color: var(--color-primary);
+}
+
+.vs-card-origen.origen-cache {
+  background-color: var(--color-cache);
+  color: var(--color-primary);
+}
+
+
+.vs-card-vacia {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vs-card-vacia span {
+  font-size: 4rem;
+  color: #ccc;
+}
+
+
+.vs-espadas {
+  font-size: 2rem;
+}
+
+
+.vs-pokemon-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+}
+
+.vs-pokemon-img {
+  width: 100px;
+  height: 100px;
+  margin-top: 1rem;
+  object-fit: contain;
+}
+
+.vs-pokemon-datos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  width: 100%;
+}
+
+.vs-pokemon-id {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.vs-pokemon-nombre {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.vs-pokemon-tipos {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.vs-tipo-tag {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.vs-favorito-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.8rem;
+}
+
+.vs-btn-favorito {
+  background-color: #fff;
+  font-size: 1.5rem;
+  padding: 0.6rem 1rem;
+}
+
+.vs-btn-favorito:not(.es-favorito) {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+
+.vs-btn-favorito.es-favorito {
+  filter: none;
+  opacity: 1;
+}
+
+
+.vs-resultado {
+  width: 80%;
+  background-color: #fff;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  min-height: 150px;
+}
+
+.vs-resultado-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #999;
+}
+
+.vs-resultado-vacio span {
+  font-size: 3rem;
+}
+
+.vs-resultado-vacio p {
+  margin: 0.5rem 0 0 0;
+  text-align: center;
+}
+
+
+.vs-batalla-pendiente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.vs-batalla-pendiente h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.vs-batalla-pendiente p {
+  margin: 0.5rem 0 0 0;
+  color: #666;
+}
+
+
+/* ========== RESULTADO DE BATALLA ========== */
+
+.batalla-resultado {
+  padding: 2rem;
+}
+
+.batalla-titulo {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+}
+
+.batalla-linea-divisora {
+  border-bottom: 4px dashed var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+
+/* Cards de batalla */
+.batalla-cards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.batalla-card {
+  flex: 1;
+  max-width: 200px;
+  background-color: #fff;
+  border: 4px solid var(--border-color);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  position: relative;
+}
+
+.batalla-card--ganador {
+  border-color: #4ecdc4;
+  background-color: #e8fff8;
+  box-shadow: 8px 8px 0px #4ecdc4;
+}
+
+.batalla-card--perdedor {
+  border-color: #ccc;
+  opacity: 0.85;
+}
+
+.batalla-ganador-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4ecdc4;
+  color: var(--color-primary);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: 3px solid var(--color-primary);
+  box-shadow: 3px 3px 0 var(--color-primary);
+  white-space: nowrap;
+}
+
+.batalla-pokemon-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.batalla-pokemon-nombre {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.batalla-pokemon-tipos {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.batalla-tipo-tag {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: bold;
+}
+
+.batalla-puntaje {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+.batalla-favorito-container {
+  margin-top: 0.5rem;
+}
+
+.batalla-btn-favorito {
+  background-color: #fff;
+  font-size: 1.2rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.batalla-btn-favorito:not(.es-favorito) {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
+
+.batalla-vs-texto {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--color-secondary);
+}
+
+
+/* Análisis de batalla */
+.analisis-titulo {
+  text-align: center;
+  font-size: 1.3rem;
+  margin: 2rem 0 1rem 0;
+  padding-top: 1rem;
+  border-top: 4px dashed var(--color-primary);
+}
+
+.analisis-seccion {
+  background-color: #fff;
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+.analisis-subtitulo {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+
+/* Ventajas de tipo */
+.ventajas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ventaja-item {
+  padding: 0.8rem 1rem;
+  border-left: 5px solid #ccc;
+  background-color: #f5f5f5;
+}
+
+.ventaja-favorable {
+  background-color: #ffe5e5;
+  border-left-color: #ff6b6b;
+}
+
+.ventaja-desfavorable {
+  background-color: #e5ffe5;
+  border-left-color: #4ecdc4;
+}
+
+.ventaja-nombre {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+}
+
+.ventaja-desc {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+
+/* Comparación de stats */
+.stats-comparacion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f9f9f9;
+  border: 3px solid var(--border-color);
+}
+
+.stats-comparacion-fila {
+  display: grid;
+  grid-template-columns: 40px 1fr 60px 1fr 40px;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stats-valor {
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.stats-valor-izq {
+  text-align: right;
+}
+
+.stats-valor-der {
+  text-align: left;
+}
+
+.stats-ganador {
+  color: #4ecdc4;
+}
+
+.stats-nombre-centro {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  background-color: var(--color-accent);
+  padding: 0.2rem 0.4rem;
+  border: 2px solid var(--border-color);
+}
+
+.stats-barra-izq,
+.stats-barra-der {
+  height: 16px;
+  background-color: #e0e0e0;
+  border: 2px solid var(--border-color);
+  overflow: hidden;
+}
+
+.stats-barra-izq {
+  direction: rtl;
+}
+
+.stats-barra-relleno {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+
+/* Cálculo del puntaje */
+.calculo-container {
+  background-color: #f9f9f9;
+  border: 3px solid var(--border-color);
+  padding: 1rem;
+}
+
+.calculo-container p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+

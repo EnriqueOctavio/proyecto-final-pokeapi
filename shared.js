@@ -9,6 +9,42 @@ const pokemonCard = document.getElementById('pokemon-card');
 const habilidadCard = document.getElementById('habilidad-card');
 
 
+// Template de la card de pokemon para restaurarla despues de cargar
+const pokemon_card_template = `
+  <div class="card-tag-container">
+    <span class="card-tag-tipo">POKEMON_DATA</span>
+    <span id="origenDatos" class="card-tag-origen">🌐 DESDE API</span>
+  </div>
+
+  <div class="card-imagen-container">
+    <img id="pokemonImagen" class="pokemon-imagen" src="" alt="Pokemon">
+  </div>
+
+  <div class="pokemon-info-principal">
+    <span id="iDPokemon" class="pokemon-nombre"></span>
+    <h2 id="nombrePokemon" class="pokemon-nombre"></h2>
+  </div>
+
+  <div class="card-tipos"></div>
+
+  <div class="habilidades-container">
+    <h3>HABILIDADES</h3>
+    <div class="card-habilidades"></div>
+  </div>
+
+  <div class="stats-container card-stats"></div>
+
+  <div class="favorito-container">
+    <button id="btn-favorito" onclick="toggle_fav()" class="botones boton-favorito">❤️</button>
+  </div>
+
+  <div class="evoluciones-seccion">
+    <h3 class="evoluciones-titulo">CADENA DE EVOLUCIÓN</h3>
+    <div class="evoluciones-container"></div>
+  </div>
+`;
+
+
 // Ocultar las cards inicialmente
 pokemonCard.style.display = 'none';
 habilidadCard.style.display = 'none';
@@ -66,7 +102,7 @@ async function load_component(idContenedor, urlArchivo) {
 }
 
 load_component('historico-section', 'historico.html');
-load_component('vs-section', 'vs.html');
+load_component('vs-section', 'pokevs.html');
 load_component('favoritos-section', 'favoritos.html');
 
 
@@ -121,6 +157,13 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
   habilidadCard.style.display = 'none';
   pokemonCard.style.display = 'block';
 
+  // Mostrar cargando
+  pokemonCard.innerHTML = `
+    <div class="estado-cargando">
+      <p>Cargando datos...</p>
+    </div>
+  `;
+
   try {
     const resultadoPokemon = await traerPoke(nombrePokemon);
     const pokemon = resultadoPokemon.data;
@@ -132,8 +175,6 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
     };
 
     pokemonActualGlobal = pokemonActual; 
-    updateFavBtn(pokemon.id);
-
 
     const resultadoEvo = await getEvo(pokemon.species.url);
 
@@ -142,6 +183,10 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
         ? 'api'
         : 'cache';
 
+    // Restaurar el HTML de la card
+    pokemonCard.innerHTML = pokemon_card_template;
+    
+    updateFavBtn(pokemon.id);
     setOrigen(origenFinal);
 
     document.getElementById('pokemonImagen').src =
@@ -155,16 +200,20 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
     render_abilities(pokemon.abilities);
     dibujarStats(pokemon.stats);
 
+    // Obtener el nuevo contenedor de evoluciones (se recreó con el template)
+    const nuevoEvoContainer = document.querySelector('.evoluciones-container');
     renderEvoChain(
       resultadoEvo.data.chain,
-      evoContainer,
+      nuevoEvoContainer,
       pokemon.name
     );
 
   } catch (error) {
-    pokemonCard.style.display = 'none';
-    evoContainer.innerHTML =
-      `<span class="error">${error.message}</span>`;
+    pokemonCard.innerHTML = `
+      <div class="estado-error">
+        <h3>Pokémon no encontrado</h3>
+      </div>
+    `;
     console.error(error);
   }
 }
@@ -574,6 +623,13 @@ async function searchAbility() {
   
   habilidadCard.style.display = 'block';
 
+  // Mostrar cargando
+  habilidadCard.innerHTML = `
+    <div class="estado-cargando">
+      <p>Cargando datos...</p>
+    </div>
+  `;
+
   try {
     const resultado = await fetchAbility(nombreHabilidad);
     const habilidad = resultado.datos;
@@ -582,9 +638,8 @@ async function searchAbility() {
 
   } catch (error) {
     habilidadCard.innerHTML = `
-      <div class="habilidad-error">
-        <span>❌</span>
-        <p>${error.message}</p>
+      <div class="estado-error">
+        <h3>Habilidad no encontrada</h3>
       </div>
     `;
     console.error(error);
