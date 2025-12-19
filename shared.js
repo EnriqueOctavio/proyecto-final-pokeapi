@@ -49,7 +49,7 @@ buttonContainer.addEventListener('click', (event) => {
 // Nota: No basta con solo abrir el index.html
 
 
-async function cargarComponente(idContenedor, urlArchivo) {
+async function load_component(idContenedor, urlArchivo) {
   const contenedor = document.getElementById(idContenedor);
   const respuestaHtml = await fetch(urlArchivo);
   const html = await respuestaHtml.text();
@@ -65,17 +65,17 @@ async function cargarComponente(idContenedor, urlArchivo) {
   });
 }
 
-cargarComponente('historico-section', 'historico.html');
-cargarComponente('vs-section', 'vs.html');
-cargarComponente('favoritos-section', 'favoritos.html');
+load_component('historico-section', 'historico.html');
+load_component('vs-section', 'vs.html');
+load_component('favoritos-section', 'favoritos.html');
 
 
 
-//Acá estamos llamando el pokemon de la api y guardando en la cache
+//Llamando el pokemon de la api y guardando en la cache (Kike no toques ya esto)
 
-async function obtenerPokemon(nombre) {
+async function traerPoke(nombre) {
   const key = `pokemon_${nombre}`;
-  const cache = obtenerDeCache(key);
+  const cache = getCache(key);
 
   if (cache) {
     return { data: cache, origen: 'cache' };
@@ -85,7 +85,7 @@ async function obtenerPokemon(nombre) {
   if (!res.ok) throw new Error('Pokémon no encontrado');
 
   const data = await res.json();
-  guardarEnCache(key, data);
+  save_cache(key, data);
 
   return { data, origen: 'api' };
 }
@@ -94,9 +94,9 @@ async function obtenerPokemon(nombre) {
 
 // Obtiene la evolucion del pokemon de la api
 //Acá estamos llamando la evolucion del pokemon de la api y guardando en la cache
-async function obtenerEvolucion(speciesUrl) { 
+async function getEvo(speciesUrl) { 
   const key = `evo_${speciesUrl}`;
-  const cache = obtenerDeCache(key);
+  const cache = getCache(key);
 
   if (cache) {
     return { data: cache, origen: 'cache' };
@@ -108,7 +108,7 @@ async function obtenerEvolucion(speciesUrl) {
   const evoRes = await fetch(speciesData.evolution_chain.url);
   const evoData = await evoRes.json();
 
-  guardarEnCache(key, evoData);
+  save_cache(key, evoData);
   return { data: evoData, origen: 'api' };
 }
 
@@ -122,7 +122,7 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
   pokemonCard.style.display = 'block';
 
   try {
-    const resultadoPokemon = await obtenerPokemon(nombrePokemon);
+    const resultadoPokemon = await traerPoke(nombrePokemon);
     const pokemon = resultadoPokemon.data;
     pokemonActual = {
       id: pokemon.id,
@@ -132,17 +132,17 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
     };
 
     pokemonActualGlobal = pokemonActual; 
-    actualizarBotonFavorito(pokemon.id);
+    updateFavBtn(pokemon.id);
 
 
-    const resultadoEvo = await obtenerEvolucion(pokemon.species.url);
+    const resultadoEvo = await getEvo(pokemon.species.url);
 
     const origenFinal =
       resultadoPokemon.origen === 'api' || resultadoEvo.origen === 'api'
         ? 'api'
         : 'cache';
 
-    mostrarOrigen(origenFinal);
+    setOrigen(origenFinal);
 
     document.getElementById('pokemonImagen').src =
       pokemon.sprites.front_default;
@@ -151,19 +151,19 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
     document.getElementById('iDPokemon').textContent =
       `#${pokemon.id}`;
 
-    mostrarTipos(pokemon.types);
-    mostrarHabilidadesPokemon(pokemon.abilities);
-    mostrarStats(pokemon.stats);
+    pintarTipos(pokemon.types);
+    render_abilities(pokemon.abilities);
+    dibujarStats(pokemon.stats);
 
-    mostrarCadenaEvolucion(
+    renderEvoChain(
       resultadoEvo.data.chain,
-      evolucionesContainer,
+      evoContainer,
       pokemon.name
     );
 
   } catch (error) {
     pokemonCard.style.display = 'none';
-    evolucionesContainer.innerHTML =
+    evoContainer.innerHTML =
       `<span class="error">${error.message}</span>`;
     console.error(error);
   }
@@ -179,7 +179,7 @@ function guardarFavoritos(favoritos) {
   }
 
 
-function toggleFavoritoActual() {
+function toggle_fav() {
   if (!pokemonActualGlobal) return;
 
   let favs = obtenerFavoritos();
@@ -193,10 +193,10 @@ function toggleFavoritoActual() {
   }
 
   localStorage.setItem(favoritosPokemon,  JSON.stringify(favs));
-  actualizarBotonFavorito(pokemonActualGlobal.id);
+  updateFavBtn(pokemonActualGlobal.id);
 }
 
-function actualizarBotonFavorito(id) {
+function updateFavBtn(id) {
   const btn = document.getElementById('btn-favorito');
   if (!btn) return;
 
@@ -209,12 +209,12 @@ function actualizarBotonFavorito(id) {
 }
 
 
-function obtenerIdDeUrl(url) { // para obtener el id de la url
+function getId(url) { // para obtener el id de la url
   return url.split('/').filter(Boolean).pop();
 }
 
 
-const coloresTipos = { // para los colores de los tipos de pokemon
+const type_colors = { // para los colores de los tipos de pokemon
   grass: '#78C850',
   poison: '#A040A0',
   fire: '#F08030',
@@ -236,7 +236,7 @@ const coloresTipos = { // para los colores de los tipos de pokemon
 };
 
 
-function mostrarTipos(tipos) { // Esto aquí lo hice para relacionar los tipos de pokemon con los colores
+function pintarTipos(tipos) { // Esto aquí lo hice para relacionar los tipos de pokemon con los colores
   const contenedor = document.querySelector('.card-tipos');
   contenedor.innerHTML = "";
 
@@ -244,13 +244,13 @@ function mostrarTipos(tipos) { // Esto aquí lo hice para relacionar los tipos d
     const span = document.createElement('span');
     span.className = 'tipo-tag';
     span.textContent = t.type.name.toUpperCase();
-    span.style.backgroundColor = coloresTipos[t.type.name] || '#999';
+    span.style.backgroundColor = type_colors[t.type.name] || '#999';
     contenedor.appendChild(span);
   });
 }
 
 
-function mostrarHabilidadesPokemon(habilidades) { // Esto aquí hace lo mismo pero para las habilidades de los pokemon
+function render_abilities(habilidades) { // Esto aquí hace lo mismo pero para las habilidades de los pokemon
   const contenedor = document.querySelector('.card-habilidades');
   contenedor.innerHTML = "";
 
@@ -261,12 +261,19 @@ function mostrarHabilidadesPokemon(habilidades) { // Esto aquí hace lo mismo pe
       ? `${h.ability.name} (Oculta)`
       :  h.ability.name;
 
+    // Click para buscar la habilidad
+    span.addEventListener('click', () => {
+      input.value = h.ability.name;
+      tipoBusqueda.value = 'habilidad';
+      searchAbility();
+    });
+
     contenedor.appendChild(span);
   });
 }
 
 
-function mostrarStats(stats) { // Esto aquí hace lo mismo pero para los stats de los pokemon
+function dibujarStats(stats) { // Esto aquí hace lo mismo pero para los stats de los pokemon
   const statsContainer = document.querySelector('.card-stats');
   statsContainer.innerHTML = "";
 
@@ -290,11 +297,11 @@ function mostrarStats(stats) { // Esto aquí hace lo mismo pero para los stats d
   });
 }
 
-const evolucionesContainer = document.querySelector('.evoluciones-container');
+const evoContainer = document.querySelector('.evoluciones-container');
 
 
 
-function crearCardEvolucion(nombre, id, esActual = false) { //Crea la card con las evoluciones de los pokemon
+function hacerCardEvo(nombre, id, esActual = false) { //Crea la card con las evoluciones de los pokemon
   const div = document.createElement('div');
   div.className = `botones ${esActual ? 'evolucion-actual' : 'otras-evoluciones'}`;
 
@@ -307,11 +314,19 @@ function crearCardEvolucion(nombre, id, esActual = false) { //Crea la card con l
     <span class="evolucion-nombre">${nombre.toUpperCase()}</span>
   `;
 
+
+  // Click para buscar esa evolucion
+  div.addEventListener('click', () => {
+    input.value = nombre;
+    tipoBusqueda.value = 'pokemon';
+    buscarPokemon();
+  });
+
   return div;
 }
 
 
-function obtenerCondicionEvolucion(details) { // Obtiene las condiciones de las evoluciones de los pokemon
+function sacarCondicion(details) { // Obtiene las condiciones de las evoluciones de los pokemon
   if (!details || details.length === 0) return '';
 
   const d = details[0];
@@ -383,14 +398,14 @@ function obtenerCondicionEvolucion(details) { // Obtiene las condiciones de las 
 
 
 
-function crearCondicionEvolucion(texto) { // Crea el texto de las condiciones de las evoluciones de los pokemon
+function crearTextoCondicion(texto) { // Crea el texto de las condiciones de las evoluciones de los pokemon
   const span = document.createElement('span');
   span.className = 'evolucion-condicion';
   span.textContent = texto;
   return span;
 }
 
-function crearFlecha() { // Crea la flecha entre evoluciones
+function poner_flecha() { // Crea la flecha entre evoluciones
   const span = document.createElement('span');
   span.className = 'evolucion-flecha';
   span.textContent = '→';
@@ -398,37 +413,37 @@ function crearFlecha() { // Crea la flecha entre evoluciones
 }
 
 
-function mostrarCadenaEvolucion(cadena, contenedor, pokemonActual) { // Renderiza la cadena de evoluciones de los pokemon
+function renderEvoChain(cadena, contenedor, pokemonActual) { // Renderiza la cadena de evoluciones de los pokemon
   contenedor.innerHTML = "";
 
   // El parámetro saltarCard indica si debemos saltar agregar la card (porque ya se agregó en un wrapper)
   function recorrer(nodo, saltarCard = false) {
     if (!saltarCard) {
-      const id = obtenerIdDeUrl(nodo.species.url);
+      const id = getId(nodo.species.url);
       const esActual = nodo.species.name === pokemonActual;
 
       contenedor.appendChild(
-        crearCardEvolucion(nodo.species.name, id, esActual)
+        hacerCardEvo(nodo.species.name, id, esActual)
       );
     }
 
     if (nodo.evolves_to.length === 1) {
       const evo = nodo.evolves_to[0];
-      const idEvo = obtenerIdDeUrl(evo.species.url);
-      const condicion = obtenerCondicionEvolucion(evo.evolution_details);
+      const idEvo = getId(evo.species.url);
+      const condicion = sacarCondicion(evo.evolution_details);
       
       // Agregar flecha antes del wrapper
-      contenedor.appendChild(crearFlecha());
+      contenedor.appendChild(poner_flecha());
       
       const envoltorio = document.createElement('div');
       envoltorio.className = 'evolucion-wrapper';
       
       if (condicion) {
-        envoltorio.appendChild(crearCondicionEvolucion(condicion));
+        envoltorio.appendChild(crearTextoCondicion(condicion));
       }
       
       envoltorio.appendChild(
-        crearCardEvolucion(evo.species.name, idEvo, evo.species.name === pokemonActual)
+        hacerCardEvo(evo.species.name, idEvo, evo.species.name === pokemonActual)
       );
       contenedor.appendChild(envoltorio);
       
@@ -440,25 +455,25 @@ function mostrarCadenaEvolucion(cadena, contenedor, pokemonActual) { // Renderiz
 
     if (nodo.evolves_to.length > 1) {
       // Agregar flecha antes de la columna de evoluciones múltiples
-      contenedor.appendChild(crearFlecha());
+      contenedor.appendChild(poner_flecha());
       
       const columna = document.createElement('div');
       columna.className = 'evoluciones-columna';
 
       nodo.evolves_to.forEach(evo => {
-        const idEvo = obtenerIdDeUrl(evo.species.url);
-        const card = crearCardEvolucion(
+        const idEvo = getId(evo.species.url);
+        const card = hacerCardEvo(
           evo.species.name,
           idEvo,
           evo.species.name === pokemonActual
         );
 
-        const condicion = obtenerCondicionEvolucion(evo.evolution_details);
+        const condicion = sacarCondicion(evo.evolution_details);
         const envoltorio = document.createElement('div');
         envoltorio.className = 'evolucion-wrapper';
 
         if (condicion) {
-          envoltorio.appendChild(crearCondicionEvolucion(condicion));
+          envoltorio.appendChild(crearTextoCondicion(condicion));
         }
 
         envoltorio.appendChild(card);
@@ -473,7 +488,7 @@ function mostrarCadenaEvolucion(cadena, contenedor, pokemonActual) { // Renderiz
 }
 
 
-function mostrarOrigen(origen) { // Muestra el origen de los datos de los pokemon (api o cache)
+function setOrigen(origen) { // Muestra el origen de los datos de los pokemon (api o cache)
   const etiqueta = document.getElementById('origenDatos');
 
   etiqueta.classList.remove('origen-api', 'origen-cache');
@@ -488,9 +503,9 @@ function mostrarOrigen(origen) { // Muestra el origen de los datos de los pokemo
 }
 
 
-const chachetiempo = 1000 * 60 * 5;  // 5 minutos
+const cache_time = 1000 * 60 * 5;  // 5 minutos
 
-function guardarEnCache(key, data) { // Guarda los datos en la cache
+function save_cache(key, data) { // Guarda los datos en la cache
   localStorage.setItem(key,JSON.stringify({
       timestamp: Date.now(),
       data
@@ -498,12 +513,12 @@ function guardarEnCache(key, data) { // Guarda los datos en la cache
   );
 }
 
-function obtenerDeCache(key) { // Obtiene los datos de la cache
+function getCache(key) { // Obtiene los datos de la cache
   const raw = localStorage.getItem(key);
   if (!raw) return null;
 
   const cache = JSON.parse(raw); // Convierte el raw a un objeto JSon
-  if (Date.now() - cache.timestamp > chachetiempo) {
+  if (Date.now() - cache.timestamp > cache_time) {
     localStorage.removeItem(key);
     return null;
   }
@@ -518,7 +533,7 @@ form.addEventListener('submit', (e) => {
   if (tipo === 'pokemon') {
     buscarPokemon();
   } else if (tipo === 'habilidad') {
-    buscarHabilidad();
+    searchAbility();
   }
 });
 
@@ -527,13 +542,13 @@ const favoritosPokemon = 'favoritos_pokemon';
 let pokemonActualGlobal = null;
 
 
-// ========== BÚSQUEDA POR HABILIDAD ==========
+// BÚSQUEDA POR HABILIDAD 
 
 
 // Acá obtenemos la habilidad de la api y la guardamos en cache
-async function obtenerHabilidadDeApi(nombre) {
+async function fetchAbility(nombre) {
   const clave = `habilidad_${nombre}`;
-  const cacheado = obtenerDeCache(clave);
+  const cacheado = getCache(clave);
 
   if (cacheado) {
     return { datos: cacheado, origen: 'cache' };
@@ -543,26 +558,27 @@ async function obtenerHabilidadDeApi(nombre) {
   if (!respuesta.ok) throw new Error('Habilidad no encontrada');
 
   const datos = await respuesta.json();
-  guardarEnCache(clave, datos);
+  save_cache(clave, datos);
 
   return { datos, origen: 'api' };
 }
 
 
 // Función para buscar una habilidad
-async function buscarHabilidad() {
+async function searchAbility() {
   const nombreHabilidad = input.value.trim().toLowerCase();
   if (!nombreHabilidad) return;
 
   // Ocultar card de Pokémon y mostrar card de habilidad
   pokemonCard.style.display = 'none';
+  
   habilidadCard.style.display = 'block';
 
   try {
-    const resultado = await obtenerHabilidadDeApi(nombreHabilidad);
+    const resultado = await fetchAbility(nombreHabilidad);
     const habilidad = resultado.datos;
 
-    mostrarCardHabilidad(habilidad, resultado.origen);
+    render_abilityCard(habilidad, resultado.origen);
 
   } catch (error) {
     habilidadCard.innerHTML = `
@@ -578,18 +594,11 @@ async function buscarHabilidad() {
 
 
 // Función para mostrar la card de habilidad con todos sus datos
-function mostrarCardHabilidad(habilidad, origen) {
+function render_abilityCard(habilidad, origen) {
 
-  // Obtener el efecto en español o inglés
-  const efectoEs = habilidad.effect_entries.find(e => e.language.name === 'es');
+  // Obtener el efecto en ingles
   const efectoEn = habilidad.effect_entries.find(e => e.language.name === 'en');
-  const efecto = efectoEs?.short_effect || efectoEn?.short_effect || 'Sin descripción disponible';
-
-
-  // Obtener el nombre en español o inglés
-  const nombreEs = habilidad.names.find(n => n.language.name === 'es');
-  const nombreEn = habilidad.names.find(n => n.language.name === 'en');
-  const nombre = nombreEs?.name || nombreEn?.name || habilidad.name;
+  const efecto = efectoEn?.short_effect || 'Sin descripción';
 
 
   // Filtrar solo Pokémon (no formas alternativas como mega, gmax, etc)
@@ -606,7 +615,7 @@ function mostrarCardHabilidad(habilidad, origen) {
     <div class="habilidad-card-header">
       <div class="habilidad-titulo">
         <span class="habilidad-icono">✨</span>
-        <h2 class="habilidad-nombre">${nombre.toUpperCase()}</h2>
+        <h2 class="habilidad-nombre">${habilidad.name.toUpperCase()}</h2>
       </div>
       <span class="habilidad-id">#${habilidad.id}</span>
     </div>
@@ -623,7 +632,7 @@ function mostrarCardHabilidad(habilidad, origen) {
       
       <div class="habilidad-pokemon-grid">
         ${listaPokemon.map(p => {
-          const idPokemon = obtenerIdDeUrl(p.pokemon.url);
+          const idPokemon = getId(p.pokemon.url);
           const esOculta = p.is_hidden;
           return `
             <div class="habilidad-pokemon-item" data-pokemon="${p.pokemon.name}">

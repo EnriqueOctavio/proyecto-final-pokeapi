@@ -10,118 +10,154 @@
 
 <script>
   (() => {
-    const HistoricoApp = (() => {
 
-      // Datos de prueba para el historial
-      const dataDePrueba = {
-        historico: [
-          {
-            id: 3,
-            nombre: "VENUSAUR",
-            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
-            tipos: ["GRASS", "POISON"]
-          },
-          {
-            id: 2,
-            nombre: "IVYSAUR",
-            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png",
-            tipos: ["GRASS", "POISON"]
-          },
-          {
-            id: 1,
-            nombre: "BULBASAUR",
-            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-            tipos: ["GRASS", "POISON"]
-          },
-          {
-            id: 25,
-            nombre: "PIKACHU",
-            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-            tipos: ["ELECTRIC"]
-          },
-          {
-            id: 6,
-            nombre: "CHARIZARD",
-            imagen: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
-            tipos: ["FIRE", "FLYING"]
-          }
-        ]
-      };
+    const htmlElements = {
+      lista: document.getElementById('historico-lista'),
+      btnLimpiar: document.getElementById('btn-limpiar-historico'),
+    };
 
 
-      const htmlElements = {
-        lista: document.getElementById('historico-lista'),
-        btnLimpiar: document.getElementById('btn-limpiar-historico'),
-      };
-
-
-      const templates = {
-        item: (pokemon) => `
-          <div class="historico-item">
-                <div class="historico-imagen-container">
-              <img class="historico-imagen" src="${pokemon.imagen}" alt="${pokemon.nombre}">
-                </div>
-            <div class="historico-info">
-              <span class="historico-nombre">#${pokemon.id}  ${pokemon.nombre}</span>
-              <div class="historico-tipos">
-                ${pokemon.tipos.map(tipo => `<span class="historico-tipo-tag">${tipo}</span>`).join('')}
+    const templates = {
+      item: (pokemon) => `
+        <div class="historico-item" data-pokemon="${pokemon.nombre.toLowerCase()}">
+              <div class="historico-imagen-container">
+            <img class="historico-imagen" src="${pokemon.imagen}" alt="${pokemon.nombre}">
               </div>
-            </div>
-            <div class="historico-acciones">
-              <button class="botones boton-favorito-mini" data-id="${pokemon.id}">
-                ❤️
-              </button>
-              <button class="botones boton-eliminar" data-id="${pokemon.id}">
-                🗑️
-              </button>
+          <div class="historico-info">
+            <span class="historico-nombre">#${pokemon.id}  ${pokemon.nombre}</span>
+            <div class="historico-tipos">
+              ${pokemon.tipos.map(tipo => `<span class="historico-tipo-tag">${tipo}</span>`).join('')}
             </div>
           </div>
-        `,
+          <div class="historico-acciones">
+            <button class="botones boton-favorito-mini" data-id="${pokemon.id}" data-pokemon='${JSON.stringify(pokemon)}'>
+              ❤️
+            </button>
+            <button class="botones boton-eliminar" data-nombre="${pokemon.nombre.toLowerCase()}">
+              🗑️
+            </button>
+          </div>
+        </div>
+      `,
 
 
-        vacio: () => `<div class="historico-vacio">
-                        <span>📜</span>
-                        <h6>No hay Pokémon en el historial</h6>
-                        <p>Busca un Pokémon para agregarlo aquí</p>
-                        </div>`,
-      };
+      vacio: () => `<div class="historico-vacio">
+                      <span>📜</span>
+                      <h6>No hay Pokémon en el historial</h6>
+                      <p>Busca un Pokémon para agregarlo aquí</p>
+                      </div>`,
+    };
 
 
-      const utils = {
-        render() {
-          if (dataDePrueba.historico.length === 0) {
-            htmlElements.lista.innerHTML = templates.vacio();
-            return;
+    // Obtener los pokemon del cache
+    function obtenerPokemonsDelCache() {
+      const pokemonsEnCache = [];
+      const tiempoCache = 1000 * 60 * 5; // 5 minutos
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        
+        // Solo los que empiezan con pokemon_
+        if (key.startsWith('pokemon_')) {
+          const raw = localStorage.getItem(key);
+          if (raw) {
+            const cacheData = JSON.parse(raw);
+            
+            // Verificar si no ha expirado
+            if (Date.now() - cacheData.timestamp <= tiempoCache) {
+              const pokemon = cacheData.data;
+              pokemonsEnCache.push({
+                id: pokemon.id,
+                nombre: pokemon.name.toUpperCase(),
+                imagen: pokemon.sprites.front_default,
+                tipos: pokemon.types.map(t => t.type.name.toUpperCase())
+              });
+            }
           }
-          htmlElements.lista.innerHTML = dataDePrueba.historico.map(pokemon => templates.item(pokemon)).join('');
         }
-      };
+      }
+
+      // Ordenar por id
+      return pokemonsEnCache.sort((a, b) => a.id - b.id);
+    }
 
 
-      const handlers = {
-        onLimpiarClick() {
-          dataDePrueba.historico.length = 0;
-          utils.render();
-        },
-        onFavoritoClick(e) {
-          const id = e.target.dataset.id;
-          console.log('Agregar a favoritos:', id);
-        },
-        onDeleteClick(e) {
-          const id = e.target.dataset.id;
-          console.log('Eliminar de historico:', id);
+    function renderHistorico() {
+      const pokemonsCache = obtenerPokemonsDelCache();
+
+      if (pokemonsCache.length === 0) {
+        htmlElements.lista.innerHTML = templates.vacio();
+        return;
+      }
+
+      htmlElements.lista.innerHTML = pokemonsCache.map(pokemon => templates.item(pokemon)).join('');
+    }
+
+
+    // Click en la lista para manejar los botones
+    htmlElements.lista.addEventListener('click', (e) => {
+
+      // Click en el item para buscar el pokemon
+      const item = e.target.closest('.historico-item');
+      if (item && !e.target.closest('button')) {
+        const nombrePokemon = item.dataset.pokemon;
+        document.getElementById('valor-busqueda').value = nombrePokemon;
+        document.getElementById('tipo-busqueda').value = 'pokemon';
+        buscarPokemon();
+        
+        // Cambiar a la pestaña de buscar
+        document.querySelector('[data-view="buscar"]').click();
+        return;
+      }
+
+
+      // Click en boton favorito
+      const btnFavorito = e.target.closest('.boton-favorito-mini');
+      if (btnFavorito) {
+        const pokemonData = JSON.parse(btnFavorito.dataset.pokemon);
+        
+        let favs = obtenerFavoritos();
+        const existe = favs.some(p => p.id === pokemonData.id);
+
+        if (!existe) {
+          favs.push(pokemonData);
+          guardarFavoritos(favs);
+          alert('Agregado a favoritos!');
+        } else {
+          alert('Ya está en favoritos');
         }
-      };
+        return;
+      }
 
 
-      return {
-        init() {
-          htmlElements.btnLimpiar.addEventListener('click', handlers.onLimpiarClick);
-          utils.render();
+      // Click en boton eliminar
+      const btnEliminar = e.target.closest('.boton-eliminar');
+      if (btnEliminar) {
+        const nombrePokemon = btnEliminar.dataset.nombre;
+        localStorage.removeItem(`pokemon_${nombrePokemon}`);
+        renderHistorico();
+        return;
+      }
+    });
+
+
+    // Limpiar todo el historico
+    htmlElements.btnLimpiar.addEventListener('click', () => {
+      const keysAEliminar = [];
+      
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('pokemon_')) {
+          keysAEliminar.push(key);
         }
-      };
-    })();
+      }
 
-    HistoricoApp.init();
+      keysAEliminar.forEach(key => localStorage.removeItem(key));
+      renderHistorico();
+    });
+
+
+    renderHistorico();
+
   })();
 </script>
