@@ -30,6 +30,11 @@ buttonContainer.addEventListener('click', (event) => {
   });
 
   tituloPrincipal.textContent = titulos[vistaButton];
+
+  if (vistaButton === 'favoritos') {
+    renderFavoritos();
+  }
+
 });
 
 // Html dentro de otro html como si fuesen componentes
@@ -105,6 +110,16 @@ async function searchEvolution() { // Busca la evolucion del pokemon
   try {
     const pokemonResult = await obtenerPokemon(nombrePokemon);
     const pokemon = pokemonResult.data;
+    pokemonActual = {
+      id: pokemon.id,
+      nombre: pokemon.name.toUpperCase(),
+      imagen: pokemon.sprites.front_default,
+      tipos: pokemon.types.map(t => t.type.name.toUpperCase())
+    };
+
+    pokemonActualGlobal = pokemonActual; 
+    actualizarBotonFavorito(pokemon.id);
+
 
     const evoResult = await obtenerEvolucion(pokemon.species.url);
 
@@ -137,6 +152,43 @@ async function searchEvolution() { // Busca la evolucion del pokemon
       `<span class="error">${error.message}</span>`;
     console.error(error);
   }
+}
+
+function obtenerFavoritos() {
+  return JSON.parse(localStorage.getItem(favoritosPokemon)) || [];
+}
+
+function guardarFavoritos(favoritos) {
+    localStorage.setItem(favoritosPokemon, JSON.stringify(favoritos));
+  }
+
+function toggleFavoritoActual() {
+  if (!pokemonActualGlobal) return;
+
+  let favs = obtenerFavoritos();
+
+  const existe = favs.some(p => p.id === pokemonActualGlobal.id);
+
+  if (existe) {
+    favs = favs.filter(p => p.id !== pokemonActualGlobal.id);
+  } else {
+    favs.push(pokemonActualGlobal);
+  }
+
+  localStorage.setItem(favoritosPokemon, JSON.stringify(favs));
+  actualizarBotonFavorito(pokemonActualGlobal.id);
+}
+
+function actualizarBotonFavorito(id) {
+  const btn = document.getElementById('btn-favorito');
+  if (!btn) return;
+
+  const favs = obtenerFavoritos();
+  const esFav = favs.some(p => p.id === id);
+
+  btn.textContent = esFav
+    ? '❤️'
+    : '🤍';
 }
 
 function getIdFromUrl(url) { // para obtener el id de la url
@@ -433,3 +485,30 @@ form.addEventListener('submit', (e) => {
   e.preventDefault();
   searchEvolution();
 });
+
+const favoritosPokemon = 'favoritos_pokemon';
+let pokemonActualGlobal = null;
+
+function renderFavoritos() {
+  const container = document.getElementById('favoritos-lista');
+  if (!container) return;
+
+  const favs = obtenerFavoritos();
+  container.innerHTML = '';
+
+  if (favs.length === 0) {
+    container.innerHTML = '<p>No hay favoritos</p>';
+    return;
+  }
+
+  favs.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'favorito-card';
+    card.innerHTML = `
+      <img src="${p.imagen}">
+      <span>${p.nombre}</span>
+    `;
+    container.appendChild(card);
+  });
+}
+
