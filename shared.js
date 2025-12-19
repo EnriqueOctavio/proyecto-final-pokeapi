@@ -312,27 +312,57 @@ function crearCondicionEvolucion(texto) { // Crea el texto de las condiciones de
   return span;
 }
 
+function crearFlecha() { // Crea la flecha entre evoluciones
+  const span = document.createElement('span');
+  span.className = 'evolucion-flecha';
+  span.textContent = '→';
+  return span;
+}
+
 function renderCadenaFinal(chain, container, pokemonActual) { // Renderiza la cadena de evoluciones de los pokemon
   container.innerHTML = "";
 
-  function recorrer(nodo) {
-    const id = getIdFromUrl(nodo.species.url);
-    const esActual = nodo.species.name === pokemonActual;
+  // El parámetro skipCard indica si debemos saltar agregar la card (porque ya se agregó en un wrapper)
+  function recorrer(nodo, skipCard = false) {
+    if (!skipCard) {
+      const id = getIdFromUrl(nodo.species.url);
+      const esActual = nodo.species.name === pokemonActual;
 
-    container.appendChild(
-      crearCardEvolucion(nodo.species.name, id, esActual)
-    );
+      container.appendChild(
+        crearCardEvolucion(nodo.species.name, id, esActual)
+      );
+    }
 
     if (nodo.evolves_to.length === 1) {
       const evo = nodo.evolves_to[0];
+      const idEvo = getIdFromUrl(evo.species.url);
       const condicion = obtenerCondicionEvolucion(evo.evolution_details);
+      
+      // Agregar flecha antes del wrapper
+      container.appendChild(crearFlecha());
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = 'evolucion-wrapper';
+      
       if (condicion) {
-        container.appendChild(crearCondicionEvolucion(condicion));
+        wrapper.appendChild(crearCondicionEvolucion(condicion));
       }
-      recorrer(evo);
+      
+      wrapper.appendChild(
+        crearCardEvolucion(evo.species.name, idEvo, evo.species.name === pokemonActual)
+      );
+      container.appendChild(wrapper);
+      
+      // Continuar con las siguientes evoluciones (skipCard=true porque ya agregamos la card en el wrapper)
+      if (evo.evolves_to.length > 0) {
+        recorrer(evo, true);
+      }
     }
 
     if (nodo.evolves_to.length > 1) {
+      // Agregar flecha antes de la columna de evoluciones múltiples
+      container.appendChild(crearFlecha());
+      
       const columna = document.createElement('div');
       columna.className = 'evoluciones-columna';
 

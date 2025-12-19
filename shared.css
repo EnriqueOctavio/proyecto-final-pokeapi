@@ -269,9 +269,8 @@ h1 {
 /* Info principal del Pokemon (imagen, nombre, ID) */
 .pokemon-info-principal {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 1.5rem;
+  margin: 1rem 2rem;
   gap: 0.5rem;
   border-bottom: var(--border-width) solid var(--border-color);
 }
@@ -288,7 +287,6 @@ h1 {
     #e6e6e6 28px
   );
   border: var(--border-width) solid var(--border-color);
-  box-shadow: var(--shadow);
 }
 
 .pokemon-nombre {
@@ -296,12 +294,6 @@ h1 {
   font-size: 2rem;
   font-weight: bold;
   text-transform: uppercase;
-}
-
-.pokemon-id {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #666;
 }
 
 .card-imagen-container{
@@ -353,11 +345,11 @@ h1 {
 
 .card-tipos{
   display: flex;
-  justify-content: center;
+  justify-content: start;
   gap: 1rem;
   font-size: 1rem;
   font-weight: bold;
-  padding: 1rem;
+  padding: 0rem 2rem;
 }
 
 .tipo-tag{
@@ -369,8 +361,7 @@ h1 {
 .habilidades-container{
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.5rem;
-  padding: 0 1rem;
+  padding: 0rem 2rem;
 }
 
 .card-habilidades{
@@ -398,7 +389,7 @@ h1 {
   flex-direction: column;
   gap: 8px;
   margin-top: 10px;
-  padding: 0 1rem;
+  padding: 2rem;
 }
 
 .stat-fila {
@@ -411,7 +402,7 @@ h1 {
 }
 
 .stat-nombre {
-  text-align: right;
+  text-align: left;
   text-transform: uppercase;
 }
 
@@ -440,13 +431,15 @@ h1 {
 .boton-favorito{
   font-size: 2rem;
   background-color: var(--color-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 /* estilos de las evoluciones */
 
 .evoluciones-seccion {
   border-top: 6px dashed var(--color-primary);
+
+  margin: 2rem;
 }
 
 .evoluciones-titulo {
@@ -500,7 +493,7 @@ h1 {
 
 .evoluciones-container {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 16px;
 }
 
@@ -511,8 +504,10 @@ h1 {
 }
 
 .evolucion-flecha {
-  font-size: 24px;
-  color: #3b82f6;
+  font-size: 1.5rem;
+  color: var(--color-secondary);
+  font-weight: bold;
+  align-self: center;
 }
 
 .evolucion-actual {
@@ -537,8 +532,9 @@ h1 {
 
 .evolucion-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 /* Estilos del historico */
 
