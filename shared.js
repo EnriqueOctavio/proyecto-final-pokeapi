@@ -126,6 +126,25 @@ async function traerPoke(nombre) {
   return { data, origen: 'api' };
 }
 
+let audioGrito = null;
+
+function reproducirGritoPokemon(pokemon) {
+  if (!pokemon.cries || !pokemon.cries.latest) return;
+
+  // Detener audio anterior si existe
+  if (audioGrito) {
+    audioGrito.pause();
+    audioGrito.currentTime = 0;
+  }
+
+  audioGrito = new Audio(pokemon.cries.latest);
+  audioGrito.volume = 0.5; // opcional
+  audioGrito.play().catch(() => {
+    // Evita errores si el navegador bloquea autoplay
+  });
+}
+
+
 
 
 // Obtiene la evolucion del pokemon de la api
@@ -167,13 +186,15 @@ async function buscarPokemon() { // Busca la evolucion del pokemon
   try {
     const resultadoPokemon = await traerPoke(nombrePokemon);
     const pokemon = resultadoPokemon.data;
+    reproducirGritoPokemon(pokemon);
     pokemonActual = {
       id: pokemon.id,
       nombre: pokemon.name.toUpperCase(),
       imagen: pokemon.sprites.front_default,
       tipos: pokemon.types.map(t => t.type.name.toUpperCase())
     };
-
+    
+    
     pokemonActualGlobal = pokemonActual; 
 
     const resultadoEvo = await getEvo(pokemon.species.url);
