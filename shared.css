@@ -167,6 +167,14 @@ h1 {
   background-color: var(--color-api)
 }
 
+.panel{
+  max-width: 500px;
+  display: flex;  
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .view-panel[hidden] {
   display: none;
 }
