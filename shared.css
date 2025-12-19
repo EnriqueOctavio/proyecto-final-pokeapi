@@ -230,7 +230,7 @@ h1 {
 
 .pokemon-card{
   border: var(--border-width) solid var(--border-color);
-  width: 380px;
+  width: 440px;
   background-color: #fff;
   box-shadow: var(--shadow);
 }
@@ -425,4 +425,96 @@ h1 {
 .evolucion-flecha {
   font-size: 1rem;
   color: var(--color-error);
+}
+
+#result{
+  width: 100vh;
+  height: 200px;
+}
+
+.evoluciones-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.evoluciones-columna {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.evolucion-flecha {
+  font-size: 24px;
+  color: #3b82f6;
+}
+
+.evolucion-actual {
+  background-color: #4fd1c5;
+  border: 4px solid #1f2933;
+  box-shadow: 6px 6px 0 #1f2933;
+}
+
+.otras-evoluciones {
+  background-color: #d1d5db;
+  border: 4px solid #1f2933;
+  box-shadow: 6px 6px 0 #1f2933;
+}
+
+
+.card-stats {
+  margin-top: 10px;
+}
+
+.stat-fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stat-nombre {
+  width: 120px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.stat-barra-container {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.stat-barra {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+/* Número al final de la barra */
+.stat-valor {
+  width: 35px;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: right;
+}
+
+
+.evolucion-condicion {
+  font-size: 11px;
+  font-weight: bold;
+  color: #555;
+  margin: 0 8px;
+  white-space: nowrap;
+}
+
+.evolucion-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
