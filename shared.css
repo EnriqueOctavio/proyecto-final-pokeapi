@@ -1561,3 +1561,32 @@ h1 {
   font-size: 0.9rem;
 }
 
+.autocompletarlista {
+  position: absolute;
+  background: var(--card-bg, #fff);
+  border: 1px solid #ccc;
+  width: 50%;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+  border-radius: 8px;
+}
+
+.autocompletar-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.autocompletar-item:hover {
+  background-color: #eee;
+}
+
+.dark-mode .autocompletarlista {
+  background: #1e1e1e;
+  border-color: #333;
+}
+
+.dark-mode .autocompletar-item:hover {
+  background-color: #333;
+}
+

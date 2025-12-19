@@ -7,6 +7,8 @@ const tituloPrincipal = document.getElementById('titulo-principal');
 const tipoBusqueda = document.getElementById('tipo-busqueda');
 const pokemonCard = document.getElementById('pokemon-card');
 const habilidadCard = document.getElementById('habilidad-card');
+const autocompletar = document.getElementById('autocompletar');
+let listaPokemonNombres = [];
 
 
 // Template de la card de pokemon para restaurarla despues de cargar
@@ -144,7 +146,56 @@ function reproducirGritoPokemon(pokemon) {
   });
 }
 
+async function cargarListaPokemon() {
+  if (listaPokemonNombres.length > 0) return;
 
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
+  const data = await res.json();
+
+  listaPokemonNombres = data.results.map(p => p.name);
+}
+
+function mostrarAutocompletado(valor) {
+  autocompletar.innerHTML = '';
+
+  if (!valor || tipoBusqueda.value !== 'pokemon') return;
+
+  const texto = valor.toLowerCase();
+
+  const coincidencias = listaPokemonNombres
+    .filter(nombre => nombre.startsWith(texto))
+    .slice(0, 8); // límite de sugerencias
+
+  coincidencias.forEach(nombre => {
+    const item = document.createElement('div');
+    item.className = 'autocompletar-item';
+    item.textContent = nombre.toUpperCase();
+
+    item.addEventListener('click', () => {
+      input.value = nombre;
+      autocompletar.innerHTML = '';
+      buscarPokemon();
+    });
+
+    autocompletar.appendChild(item);
+  });
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#valor-busqueda')) {
+    autocompletar.innerHTML = '';
+  }
+});
+
+input.addEventListener('input', async () => {
+  if (tipoBusqueda.value !== 'pokemon') {
+    autocompletar.innerHTML = '';
+    return;
+  }
+
+  await cargarListaPokemon();
+  mostrarAutocompletado(input.value);
+});
 
 
 // Obtiene la evolucion del pokemon de la api
@@ -599,6 +650,8 @@ function getCache(key) { // Obtiene los datos de la cache
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const tipo = tipoBusqueda.value;
+
+  autocompletar.innerHTML = '';
   
   if (tipo === 'pokemon') {
     buscarPokemon();
