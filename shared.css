@@ -175,7 +175,7 @@ h1 {
   align-items: center;
 }
 
-.view-panel[hidden] {
+.panel[hidden] {
   display: none;
 }
 
