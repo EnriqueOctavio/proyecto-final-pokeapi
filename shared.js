@@ -246,43 +246,116 @@ function renderCadenaFinal(chain, container, pokemonActual) {
   recorrer(chain);
 }
 
+function renderOrigen(origen) {
+  const badge = document.getElementById('origenDatos');
+
+  badge.classList.remove('origen-api', 'origen-cache');
+
+  if (origen === 'cache') {
+    badge.textContent = 'DESDE CACHÉ';
+    badge.classList.add('origen-cache');
+  } else {
+    badge.textContent = 'DESDE API';
+    badge.classList.add('origen-api');
+  }
+}
+
+const CACHE_TIEMPO = 1000 * 60 * 5; 
+
+function guardarEnCache(key, data) {
+  localStorage.setItem(
+    key,
+    JSON.stringify({
+      timestamp: Date.now(),
+      data
+    })
+  );
+}
+
+function obtenerDeCache(key) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
+
+  const cache = JSON.parse(raw);
+  if (Date.now() - cache.timestamp > CACHE_TIEMPO) {
+    localStorage.removeItem(key);
+    return null;
+  }
+  return cache.data;
+}
+
+async function obtenerPokemon(nombre) {
+  const key = `pokemon_${nombre}`;
+  const cache = obtenerDeCache(key);
+
+  if (cache) {
+    return { data: cache, origen: 'cache' };
+  }
+
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${nombre}`);
+  if (!res.ok) throw new Error('Pokémon no encontrado');
+
+  const data = await res.json();
+  guardarEnCache(key, data);
+
+  return { data, origen: 'api' };
+}
+
+async function obtenerEvolucion(speciesUrl) {
+  const key = `evo_${speciesUrl}`;
+  const cache = obtenerDeCache(key);
+
+  if (cache) {
+    return { data: cache, origen: 'cache' };
+  }
+
+  const speciesRes = await fetch(speciesUrl);
+  const speciesData = await speciesRes.json();
+
+  const evoRes = await fetch(speciesData.evolution_chain.url);
+  const evoData = await evoRes.json();
+
+  guardarEnCache(key, evoData);
+  return { data: evoData, origen: 'api' };
+}
+
 async function searchEvolution() {
   const nombrePokemon = input.value.trim().toLowerCase();
   if (!nombrePokemon) return;
 
   try {
-    const pokemonRes = await fetch(
-      `https://pokeapi.co/api/v2/pokemon/${nombrePokemon}`
-    );
-    if (!pokemonRes.ok) throw new Error('Pokémon no encontrado');
+    const pokemonResult = await obtenerPokemon(nombrePokemon);
+    const pokemon = pokemonResult.data;
 
-    const pokemonData = await pokemonRes.json();
+    const evoResult = await obtenerEvolucion(pokemon.species.url);
+
+    const origenFinal =
+      pokemonResult.origen === 'api' || evoResult.origen === 'api'
+        ? 'api'
+        : 'cache';
+
+    renderOrigen(origenFinal);
 
     document.getElementById('pokemonImagen').src =
-      pokemonData.sprites.front_default;
+      pokemon.sprites.front_default;
     document.getElementById('nombrePokemon').textContent =
-      pokemonData.name.toUpperCase();
+      pokemon.name.toUpperCase();
     document.getElementById('iDPokemon').textContent =
-      `#${pokemonData.id}`;
+      `#${pokemon.id}`;
 
-    renderTipos(pokemonData.types);
-    renderHabilidades(pokemonData.abilities);
-    renderStats(pokemonData.stats);
-
-    const speciesRes = await fetch(pokemonData.species.url);
-    const speciesData = await speciesRes.json();
-
-    const evoRes = await fetch(speciesData.evolution_chain.url);
-    const evoData = await evoRes.json();
+    renderTipos(pokemon.types);
+    renderHabilidades(pokemon.abilities);
+    renderStats(pokemon.stats);
 
     renderCadenaFinal(
-      evoData.chain,
+      evoResult.data.chain,
       evolucionesContainer,
-      pokemonData.name
+      pokemon.name
     );
 
   } catch (error) {
-    evolucionesContainer.innerHTML = `<span class="error">${error.message}</span>`;
+    evolucionesContainer.innerHTML =
+      `<span class="error">${error.message}</span>`;
     console.error(error);
   }
 }
