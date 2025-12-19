@@ -4,6 +4,14 @@ const panels = document.querySelectorAll('[data-view-panel]');
 const input = document.getElementById('valor-busqueda');
 const form = document.getElementById('form-busqueda');
 const tituloPrincipal = document.getElementById('titulo-principal');
+const tipoBusqueda = document.getElementById('tipo-busqueda');
+const pokemonCard = document.getElementById('pokemon-card');
+const habilidadCard = document.getElementById('habilidad-card');
+
+
+// Ocultar las cards inicialmente
+pokemonCard.style.display = 'none';
+habilidadCard.style.display = 'none';
 
 const titulos = {
   buscar: 'Pokémon Finder',
@@ -15,6 +23,7 @@ const titulos = {
 panels.forEach(panel => {
   panel.hidden = panel.dataset.viewPanel !== 'buscar';
 });
+
 
 buttonContainer.addEventListener('click', (event) => {
   const button = event.target.closest('.button-tag');
@@ -30,11 +39,6 @@ buttonContainer.addEventListener('click', (event) => {
   });
 
   tituloPrincipal.textContent = titulos[vistaButton];
-
-  if (vistaButton === 'favoritos') {
-    renderFavoritos();
-  }
-
 });
 
 // Html dentro de otro html como si fuesen componentes
@@ -43,6 +47,7 @@ buttonContainer.addEventListener('click', (event) => {
 // cd C:\Users\engonzalez\Desktop\pokeapi  
 // npx serve 
 // Nota: No basta con solo abrir el index.html
+
 
 async function cargarComponente(idContenedor, urlArchivo) {
   const contenedor = document.getElementById(idContenedor);
@@ -64,6 +69,8 @@ cargarComponente('historico-section', 'historico.html');
 cargarComponente('vs-section', 'vs.html');
 cargarComponente('favoritos-section', 'favoritos.html');
 
+
+
 //Acá estamos llamando el pokemon de la api y guardando en la cache
 
 async function obtenerPokemon(nombre) {
@@ -82,6 +89,8 @@ async function obtenerPokemon(nombre) {
 
   return { data, origen: 'api' };
 }
+
+
 
 // Obtiene la evolucion del pokemon de la api
 //Acá estamos llamando la evolucion del pokemon de la api y guardando en la cache
@@ -103,13 +112,18 @@ async function obtenerEvolucion(speciesUrl) {
   return { data: evoData, origen: 'api' };
 }
 
-async function searchEvolution() { // Busca la evolucion del pokemon
+
+async function buscarPokemon() { // Busca la evolucion del pokemon
   const nombrePokemon = input.value.trim().toLowerCase();
   if (!nombrePokemon) return;
 
+  // Ocultar card de habilidad y mostrar card de Pokémon
+  habilidadCard.style.display = 'none';
+  pokemonCard.style.display = 'block';
+
   try {
-    const pokemonResult = await obtenerPokemon(nombrePokemon);
-    const pokemon = pokemonResult.data;
+    const resultadoPokemon = await obtenerPokemon(nombrePokemon);
+    const pokemon = resultadoPokemon.data;
     pokemonActual = {
       id: pokemon.id,
       nombre: pokemon.name.toUpperCase(),
@@ -121,14 +135,14 @@ async function searchEvolution() { // Busca la evolucion del pokemon
     actualizarBotonFavorito(pokemon.id);
 
 
-    const evoResult = await obtenerEvolucion(pokemon.species.url);
+    const resultadoEvo = await obtenerEvolucion(pokemon.species.url);
 
     const origenFinal =
-      pokemonResult.origen === 'api' || evoResult.origen === 'api'
+      resultadoPokemon.origen === 'api' || resultadoEvo.origen === 'api'
         ? 'api'
         : 'cache';
 
-    renderOrigen(origenFinal);
+    mostrarOrigen(origenFinal);
 
     document.getElementById('pokemonImagen').src =
       pokemon.sprites.front_default;
@@ -137,22 +151,24 @@ async function searchEvolution() { // Busca la evolucion del pokemon
     document.getElementById('iDPokemon').textContent =
       `#${pokemon.id}`;
 
-    renderTipos(pokemon.types);
-    renderHabilidades(pokemon.abilities);
-    renderStats(pokemon.stats);
+    mostrarTipos(pokemon.types);
+    mostrarHabilidadesPokemon(pokemon.abilities);
+    mostrarStats(pokemon.stats);
 
-    renderCadenaFinal(
-      evoResult.data.chain,
+    mostrarCadenaEvolucion(
+      resultadoEvo.data.chain,
       evolucionesContainer,
       pokemon.name
     );
 
   } catch (error) {
+    pokemonCard.style.display = 'none';
     evolucionesContainer.innerHTML =
       `<span class="error">${error.message}</span>`;
     console.error(error);
   }
 }
+
 
 function obtenerFavoritos() {
   return JSON.parse(localStorage.getItem(favoritosPokemon)) || [];
@@ -161,6 +177,7 @@ function obtenerFavoritos() {
 function guardarFavoritos(favoritos) {
     localStorage.setItem(favoritosPokemon, JSON.stringify(favoritos));
   }
+
 
 function toggleFavoritoActual() {
   if (!pokemonActualGlobal) return;
@@ -175,7 +192,7 @@ function toggleFavoritoActual() {
     favs.push(pokemonActualGlobal);
   }
 
-  localStorage.setItem(favoritosPokemon, JSON.stringify(favs));
+  localStorage.setItem(favoritosPokemon,  JSON.stringify(favs));
   actualizarBotonFavorito(pokemonActualGlobal.id);
 }
 
@@ -191,11 +208,13 @@ function actualizarBotonFavorito(id) {
     : '🤍';
 }
 
-function getIdFromUrl(url) { // para obtener el id de la url
+
+function obtenerIdDeUrl(url) { // para obtener el id de la url
   return url.split('/').filter(Boolean).pop();
 }
 
-const typeColors = { // para los colores de los tipos de pokemon
+
+const coloresTipos = { // para los colores de los tipos de pokemon
   grass: '#78C850',
   poison: '#A040A0',
   fire: '#F08030',
@@ -216,35 +235,38 @@ const typeColors = { // para los colores de los tipos de pokemon
   flying: '#A890F0'
 };
 
-function renderTipos(types) { // Esto aquí lo hicepara relacionar los tipos de pokemon con los colores
-  const container = document.querySelector('.card-tipos');
-  container.innerHTML = "";
 
-  types.forEach(t => {
+function mostrarTipos(tipos) { // Esto aquí lo hice para relacionar los tipos de pokemon con los colores
+  const contenedor = document.querySelector('.card-tipos');
+  contenedor.innerHTML = "";
+
+  tipos.forEach(t => {
     const span = document.createElement('span');
     span.className = 'tipo-tag';
     span.textContent = t.type.name.toUpperCase();
-    span.style.backgroundColor = typeColors[t.type.name] || '#999';
-    container.appendChild(span);
+    span.style.backgroundColor = coloresTipos[t.type.name] || '#999';
+    contenedor.appendChild(span);
   });
 }
 
-function renderHabilidades(abilities) { // Esto aquí hace lo mismo pero para las habilidades de los pokemon
-  const container = document.querySelector('.card-habilidades');
-  container.innerHTML = "";
 
-  abilities.forEach(a => {
+function mostrarHabilidadesPokemon(habilidades) { // Esto aquí hace lo mismo pero para las habilidades de los pokemon
+  const contenedor = document.querySelector('.card-habilidades');
+  contenedor.innerHTML = "";
+
+  habilidades.forEach(h => {
     const span = document.createElement('span');
     span.className = 'botones habilidad-tag';
-    span.textContent = a.is_hidden
-      ? `${a.ability.name} (Hidden)`
-      : a.ability.name;
+    span.textContent = h.is_hidden
+      ? `${h.ability.name} (Oculta)`
+      :  h.ability.name;
 
-    container.appendChild(span);
+    contenedor.appendChild(span);
   });
 }
 
-function renderStats(stats) { // Esto aquí hace lo mismo pero para los stats de los pokemon
+
+function mostrarStats(stats) { // Esto aquí hace lo mismo pero para los stats de los pokemon
   const statsContainer = document.querySelector('.card-stats');
   statsContainer.innerHTML = "";
 
@@ -270,6 +292,8 @@ function renderStats(stats) { // Esto aquí hace lo mismo pero para los stats de
 
 const evolucionesContainer = document.querySelector('.evoluciones-container');
 
+
+
 function crearCardEvolucion(nombre, id, esActual = false) { //Crea la card con las evoluciones de los pokemon
   const div = document.createElement('div');
   div.className = `botones ${esActual ? 'evolucion-actual' : 'otras-evoluciones'}`;
@@ -285,6 +309,7 @@ function crearCardEvolucion(nombre, id, esActual = false) { //Crea la card con l
 
   return div;
 }
+
 
 function obtenerCondicionEvolucion(details) { // Obtiene las condiciones de las evoluciones de los pokemon
   if (!details || details.length === 0) return '';
@@ -357,6 +382,7 @@ function obtenerCondicionEvolucion(details) { // Obtiene las condiciones de las 
 }
 
 
+
 function crearCondicionEvolucion(texto) { // Crea el texto de las condiciones de las evoluciones de los pokemon
   const span = document.createElement('span');
   span.className = 'evolucion-condicion';
@@ -371,41 +397,42 @@ function crearFlecha() { // Crea la flecha entre evoluciones
   return span;
 }
 
-function renderCadenaFinal(chain, container, pokemonActual) { // Renderiza la cadena de evoluciones de los pokemon
-  container.innerHTML = "";
 
-  // El parámetro skipCard indica si debemos saltar agregar la card (porque ya se agregó en un wrapper)
-  function recorrer(nodo, skipCard = false) {
-    if (!skipCard) {
-      const id = getIdFromUrl(nodo.species.url);
+function mostrarCadenaEvolucion(cadena, contenedor, pokemonActual) { // Renderiza la cadena de evoluciones de los pokemon
+  contenedor.innerHTML = "";
+
+  // El parámetro saltarCard indica si debemos saltar agregar la card (porque ya se agregó en un wrapper)
+  function recorrer(nodo, saltarCard = false) {
+    if (!saltarCard) {
+      const id = obtenerIdDeUrl(nodo.species.url);
       const esActual = nodo.species.name === pokemonActual;
 
-      container.appendChild(
+      contenedor.appendChild(
         crearCardEvolucion(nodo.species.name, id, esActual)
       );
     }
 
     if (nodo.evolves_to.length === 1) {
       const evo = nodo.evolves_to[0];
-      const idEvo = getIdFromUrl(evo.species.url);
+      const idEvo = obtenerIdDeUrl(evo.species.url);
       const condicion = obtenerCondicionEvolucion(evo.evolution_details);
       
       // Agregar flecha antes del wrapper
-      container.appendChild(crearFlecha());
+      contenedor.appendChild(crearFlecha());
       
-      const wrapper = document.createElement('div');
-      wrapper.className = 'evolucion-wrapper';
+      const envoltorio = document.createElement('div');
+      envoltorio.className = 'evolucion-wrapper';
       
       if (condicion) {
-        wrapper.appendChild(crearCondicionEvolucion(condicion));
+        envoltorio.appendChild(crearCondicionEvolucion(condicion));
       }
       
-      wrapper.appendChild(
+      envoltorio.appendChild(
         crearCardEvolucion(evo.species.name, idEvo, evo.species.name === pokemonActual)
       );
-      container.appendChild(wrapper);
+      contenedor.appendChild(envoltorio);
       
-      // Continuar con las siguientes evoluciones (skipCard=true porque ya agregamos la card en el wrapper)
+      // Continuar con las siguientes evoluciones (saltarCard=true porque ya agregamos la card en el wrapper)
       if (evo.evolves_to.length > 0) {
         recorrer(evo, true);
       }
@@ -413,13 +440,13 @@ function renderCadenaFinal(chain, container, pokemonActual) { // Renderiza la ca
 
     if (nodo.evolves_to.length > 1) {
       // Agregar flecha antes de la columna de evoluciones múltiples
-      container.appendChild(crearFlecha());
+      contenedor.appendChild(crearFlecha());
       
       const columna = document.createElement('div');
       columna.className = 'evoluciones-columna';
 
       nodo.evolves_to.forEach(evo => {
-        const idEvo = getIdFromUrl(evo.species.url);
+        const idEvo = obtenerIdDeUrl(evo.species.url);
         const card = crearCardEvolucion(
           evo.species.name,
           idEvo,
@@ -427,39 +454,41 @@ function renderCadenaFinal(chain, container, pokemonActual) { // Renderiza la ca
         );
 
         const condicion = obtenerCondicionEvolucion(evo.evolution_details);
-        const wrapper = document.createElement('div');
-        wrapper.className = 'evolucion-wrapper';
+        const envoltorio = document.createElement('div');
+        envoltorio.className = 'evolucion-wrapper';
 
         if (condicion) {
-          wrapper.appendChild(crearCondicionEvolucion(condicion));
+          envoltorio.appendChild(crearCondicionEvolucion(condicion));
         }
 
-        wrapper.appendChild(card);
-        columna.appendChild(wrapper);
+        envoltorio.appendChild(card);
+        columna.appendChild(envoltorio);
       });
 
-      container.appendChild(columna);
+      contenedor.appendChild(columna);
     }
   }
 
-  recorrer(chain);
+  recorrer(cadena);
 }
 
-function renderOrigen(origen) { // Renderiza el origen de los datos de los pokemon (api o cache)
-  const badge = document.getElementById('origenDatos');
 
-  badge.classList.remove('origen-api', 'origen-cache');
+function mostrarOrigen(origen) { // Muestra el origen de los datos de los pokemon (api o cache)
+  const etiqueta = document.getElementById('origenDatos');
+
+  etiqueta.classList.remove('origen-api', 'origen-cache');
 
   if (origen === 'cache') {
-    badge.textContent = 'DESDE CACHÉ';
-    badge.classList.add('origen-cache');
+    etiqueta.textContent = 'DESDE CACHÉ';
+    etiqueta.classList.add('origen-cache');
   } else {
-    badge.textContent = 'DESDE API';
-    badge.classList.add('origen-api');
+    etiqueta.textContent = 'DESDE API';
+    etiqueta.classList.add('origen-api');
   }
 }
 
-const chachetiempo = 1000 * 60 * 5; 
+
+const chachetiempo = 1000 * 60 * 5;  // 5 minutos
 
 function guardarEnCache(key, data) { // Guarda los datos en la cache
   localStorage.setItem(key,JSON.stringify({
@@ -481,34 +510,147 @@ function obtenerDeCache(key) { // Obtiene los datos de la cache
   return cache.data;
 }
 
+
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  searchEvolution();
+  const tipo = tipoBusqueda.value;
+  
+  if (tipo === 'pokemon') {
+    buscarPokemon();
+  } else if (tipo === 'habilidad') {
+    buscarHabilidad();
+  }
 });
+
 
 const favoritosPokemon = 'favoritos_pokemon';
 let pokemonActualGlobal = null;
 
-function renderFavoritos() {
-  const container = document.getElementById('favoritos-lista');
-  if (!container) return;
 
-  const favs = obtenerFavoritos();
-  container.innerHTML = '';
+// ========== BÚSQUEDA POR HABILIDAD ==========
 
-  if (favs.length === 0) {
-    container.innerHTML = '<p>No hay favoritos</p>';
-    return;
+
+// Acá obtenemos la habilidad de la api y la guardamos en cache
+async function obtenerHabilidadDeApi(nombre) {
+  const clave = `habilidad_${nombre}`;
+  const cacheado = obtenerDeCache(clave);
+
+  if (cacheado) {
+    return { datos: cacheado, origen: 'cache' };
   }
 
-  favs.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'favorito-card';
-    card.innerHTML = `
-      <img src="${p.imagen}">
-      <span>${p.nombre}</span>
+  const respuesta = await fetch(`https://pokeapi.co/api/v2/ability/${nombre}`);
+  if (!respuesta.ok) throw new Error('Habilidad no encontrada');
+
+  const datos = await respuesta.json();
+  guardarEnCache(clave, datos);
+
+  return { datos, origen: 'api' };
+}
+
+
+// Función para buscar una habilidad
+async function buscarHabilidad() {
+  const nombreHabilidad = input.value.trim().toLowerCase();
+  if (!nombreHabilidad) return;
+
+  // Ocultar card de Pokémon y mostrar card de habilidad
+  pokemonCard.style.display = 'none';
+  habilidadCard.style.display = 'block';
+
+  try {
+    const resultado = await obtenerHabilidadDeApi(nombreHabilidad);
+    const habilidad = resultado.datos;
+
+    mostrarCardHabilidad(habilidad, resultado.origen);
+
+  } catch (error) {
+    habilidadCard.innerHTML = `
+      <div class="habilidad-error">
+        <span>❌</span>
+        <p>${error.message}</p>
+      </div>
     `;
-    container.appendChild(card);
+    console.error(error);
+  }
+}
+
+
+
+// Función para mostrar la card de habilidad con todos sus datos
+function mostrarCardHabilidad(habilidad, origen) {
+
+  // Obtener el efecto en español o inglés
+  const efectoEs = habilidad.effect_entries.find(e => e.language.name === 'es');
+  const efectoEn = habilidad.effect_entries.find(e => e.language.name === 'en');
+  const efecto = efectoEs?.short_effect || efectoEn?.short_effect || 'Sin descripción disponible';
+
+
+  // Obtener el nombre en español o inglés
+  const nombreEs = habilidad.names.find(n => n.language.name === 'es');
+  const nombreEn = habilidad.names.find(n => n.language.name === 'en');
+  const nombre = nombreEs?.name || nombreEn?.name || habilidad.name;
+
+
+  // Filtrar solo Pokémon (no formas alternativas como mega, gmax, etc)
+  const listaPokemon = habilidad.pokemon.filter(p => {
+    const nombrePokemon = p.pokemon.name;
+    return !nombrePokemon.includes('-mega') && 
+           !nombrePokemon.includes('-gmax') && 
+           !nombrePokemon.includes('-totem');
+  });
+
+
+  // Mostrar la card con los datos
+  habilidadCard.innerHTML = `
+    <div class="habilidad-card-header">
+      <div class="habilidad-titulo">
+        <span class="habilidad-icono">✨</span>
+        <h2 class="habilidad-nombre">${nombre.toUpperCase()}</h2>
+      </div>
+      <span class="habilidad-id">#${habilidad.id}</span>
+    </div>
+
+    <div class="habilidad-efecto-container">
+      <h3 class="habilidad-efecto-titulo">EFECTO</h3>
+      <p class="habilidad-efecto-texto">${efecto}</p>
+    </div>
+
+    <div class="habilidad-pokemon-container">
+      <h3 class="habilidad-pokemon-titulo">
+        POKÉMON CON ESTA HABILIDAD (<span class="habilidad-pokemon-count">${listaPokemon.length}</span>)
+      </h3>
+      
+      <div class="habilidad-pokemon-grid">
+        ${listaPokemon.map(p => {
+          const idPokemon = obtenerIdDeUrl(p.pokemon.url);
+          const esOculta = p.is_hidden;
+          return `
+            <div class="habilidad-pokemon-item" data-pokemon="${p.pokemon.name}">
+              <img 
+                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${idPokemon}.png" 
+                alt="${p.pokemon.name}" 
+                class="habilidad-pokemon-sprite"
+              >
+              <span class="habilidad-pokemon-nombre">${p.pokemon.name.toUpperCase()}</span>
+              ${esOculta ? '<span class="habilidad-pokemon-oculta">(oculta)</span>' : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+
+  // Agregar evento click a los Pokémon de la lista para poder buscarlos
+  const itemsPokemon = habilidadCard.querySelectorAll('.habilidad-pokemon-item');
+  itemsPokemon.forEach(item => {
+    item.addEventListener('click', () => {
+      const nombrePokemon = item.dataset.pokemon;
+      input.value = nombrePokemon;
+      tipoBusqueda.value = 'pokemon';
+      buscarPokemon();
+    });
   });
 }
 

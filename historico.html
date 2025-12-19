@@ -1,5 +1,6 @@
 <div class="historico-container">
   <div class="historico-lista" id="historico-lista"></div>
+
   <div class="historico-limpiar-container">
     <button class="botones boton-limpiar-todo" id="btn-limpiar-historico">
         🗑️ LIMPIAR TODO
@@ -10,6 +11,7 @@
 <script>
   (() => {
     const HistoricoApp = (() => {
+
       // Datos de prueba para el historial
       const dataDePrueba = {
         historico: [
@@ -46,10 +48,12 @@
         ]
       };
 
+
       const htmlElements = {
         lista: document.getElementById('historico-lista'),
         btnLimpiar: document.getElementById('btn-limpiar-historico'),
       };
+
 
       const templates = {
         item: (pokemon) => `
@@ -73,12 +77,15 @@
             </div>
           </div>
         `,
+
+
         vacio: () => `<div class="historico-vacio">
                         <span>📜</span>
                         <h6>No hay Pokémon en el historial</h6>
                         <p>Busca un Pokémon para agregarlo aquí</p>
                         </div>`,
       };
+
 
       const utils = {
         render() {
@@ -89,6 +96,7 @@
           htmlElements.lista.innerHTML = dataDePrueba.historico.map(pokemon => templates.item(pokemon)).join('');
         }
       };
+
 
       const handlers = {
         onLimpiarClick() {
@@ -104,6 +112,7 @@
           console.log('Eliminar de historico:', id);
         }
       };
+
 
       return {
         init() {

@@ -1,6 +1,7 @@
 <div class="favoritos-container">
   <div class="favoritos-lista" id="favoritos-lista"></div>
 
+
   <div class="favoritos-limpiar-container">
     <button class="botones boton-limpiar-todo" id="btn-limpiar-favoritos">
       🗑️ LIMPIAR TODO
@@ -8,9 +9,11 @@
   </div>
 </div>
 
+
 <script>
 (() => {
   const favoritosPokemon = 'favoritos_pokemon';
+
 
   const html = {
     lista: document.getElementById('favoritos-lista'),
@@ -51,6 +54,8 @@
         </div>
       </div>
     `,
+
+
     vacio: () => `
       <div class="favoritos-vacio">
         <span class="favoritos-vacio-icon">❤️</span>
@@ -59,6 +64,7 @@
       </div>
     `
   };
+
 
   function renderFavoritos() {
     const favoritos = obtenerFavoritos();
@@ -73,6 +79,7 @@
       .join('');
   }
 
+
   html.lista.addEventListener('click', (e) => {
     const btnEliminar = e.target.closest('.boton-eliminar');
     if (!btnEliminar) return;
@@ -84,10 +91,12 @@
     renderFavoritos();
   });
 
+
   html.btnLimpiar.addEventListener('click', () => {
     localStorage.removeItem(favoritosPokemon);
     renderFavoritos();
   });
+
 
   renderFavoritos();
 })();
