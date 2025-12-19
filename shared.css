@@ -167,7 +167,15 @@ h1 {
   background-color: var(--color-api)
 }
 
-.view-panel[hidden] {
+.panel{
+  max-width: 500px;
+  display: flex;  
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.panel[hidden] {
   display: none;
 }
 
@@ -225,6 +233,7 @@ h1 {
 
 .resultado-busqueda{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   margin-bottom: 2rem;
 }
@@ -756,3 +765,138 @@ h1 {
 }
 
 
+
+/* ========== ESTILOS DE CARD DE HABILIDAD ========== */
+
+.habilidad-card {
+  border: var(--border-width) solid var(--border-color);
+  width: 440px;
+  background-color: #fff;
+  box-shadow: var(--shadow);
+  margin-top: 2rem;
+  padding: 2rem;
+}
+
+.habilidad-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+.habilidad-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.habilidad-icono {
+  font-size: 1.5rem;
+}
+
+.habilidad-nombre {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.habilidad-id {
+  background-color: var(--color-accent);
+  border: var(--border-width) solid var(--border-color);
+  padding: 0.3rem 0.6rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.habilidad-efecto-container {
+  margin: 1rem;
+  padding: 1rem;
+  border: 3px solid var(--border-color);
+  background-color: #c7c7c7;
+}
+
+.habilidad-efecto-titulo {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.habilidad-efecto-texto {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.habilidad-pokemon-container {
+  padding: 0 1rem 1rem 1rem;
+}
+
+.habilidad-pokemon-titulo {
+  margin: 0 0 0.8rem 0;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.habilidad-pokemon-count {
+  font-weight: bold;
+}
+
+.habilidad-pokemon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  padding: 1rem;
+  background-color: #c7c7c7;
+  border: var(--border-width) solid var(--border-color);
+}
+
+.habilidad-pokemon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  border: 3px solid var(--border-color);
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.habilidad-pokemon-item:hover {
+  background-color: #f0f0f0;
+}
+
+.habilidad-pokemon-item--selected {
+  background-color: var(--color-api);
+}
+
+.habilidad-pokemon-sprite {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.habilidad-pokemon-nombre {
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 0.2rem;
+}
+
+.habilidad-pokemon-oculta {
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: var(--color-secondary);
+  text-transform: lowercase;
+}
