@@ -3,8 +3,6 @@ const buttonTag = document.querySelectorAll('.button-tag');
 const panels = document.querySelectorAll('[data-view-panel]');
 const input = document.getElementById('valor-busqueda');
 const form = document.getElementById('form-busqueda');
-const buttonTag = document.querySelectorAll('.button-tag')
-const panels = document.querySelectorAll('[data-view-panel]')
 const tituloPrincipal = document.getElementById('titulo-principal');
 
 const titulos = {
