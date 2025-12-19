@@ -68,7 +68,7 @@ function renderHabilidades(abilities) {
     const span = document.createElement('span');
     span.className = 'botones habilidad-tag';
     span.textContent = a.is_hidden
-      ? `${a.ability.name} (Oculta)`
+      ? `${a.ability.name} (Hidden)`
       : a.ability.name;
 
     container.appendChild(span);
@@ -263,9 +263,7 @@ function renderOrigen(origen) {
 const CACHE_TIEMPO = 1000 * 60 * 5; 
 
 function guardarEnCache(key, data) {
-  localStorage.setItem(
-    key,
-    JSON.stringify({
+  localStorage.setItem(key,JSON.stringify({
       timestamp: Date.now(),
       data
     })
