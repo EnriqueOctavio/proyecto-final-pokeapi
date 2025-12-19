@@ -34,7 +34,7 @@ buttonContainer.addEventListener('click', (event) => {
 
 // Html dentro de otro html como si fuesen componentes
 
-// para la terminar 
+// para la terminal
 // cd C:\Users\engonzalez\Desktop\pokeapi  
 // npx serve 
 // Nota: No basta con solo abrir el index.html
@@ -58,7 +58,6 @@ async function cargarComponente(idContenedor, urlArchivo) {
 cargarComponente('historico-section', 'historico.html');
 cargarComponente('vs-section', 'vs.html');
 cargarComponente('favoritos-section', 'favoritos.html');
-
 
 //Acá estamos llamando el pokemon de la api y guardando en la cache
 
