@@ -1,6 +1,6 @@
 # 🎮 Proyecto Semestral: PokéFinder - Aplicación Web con Consumo de API
 
-##Integrantes: Enrique Gonzales y Jose Torres
+## Integrantes: Enrique Gonzales y Jose Torres
 
 ## 🎯 Objetivos de Aprendizaje
 
